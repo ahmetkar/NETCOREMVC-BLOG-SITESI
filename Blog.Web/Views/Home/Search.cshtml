@@ -1,0 +1,88 @@
+﻿@model (ArticleListViewModel,string)
+<section class="section">
+    <div class="container">
+        <div class="row">
+
+            <!--Content col-->
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                <div class="page-wrapper">
+                    <div class="blog-top clearfix">
+                        <hr class="invis">
+                        <hr class="invis">
+                        <h4 class="pull-left">Arama sonuçları <a href="#"><i class="fa fa-rss"></i></a></h4>
+                    </div><!-- end blog-top -->
+
+                    <div class="blog-list clearfix">
+                        @foreach (var article in Model.Item1.Articles)
+                        {
+                            <div class="blog-box row">
+
+                                <div class="col-md-4">
+                                    <div class="post-media">
+                                        <a href="tech-single.html" title="">
+
+                                            <img width="600" height="500" src="~/images/@article.Image.FileName" alt="" class="img-fluid">
+
+                                            <div class="hovereffect"></div>
+                                        </a>
+                                    </div><!-- end media -->
+                                </div><!-- end col -->
+
+                                <div class="blog-meta big-meta col-md-8">
+                                    <h4 style="word-wrap:break-word;overflow-wrap:break-word;">
+                                        <a asp-controller="Article" asp-action="ReadArticle" title="">@article.Title</a>
+                                    </h4>
+
+                                    <p style="word-wrap:break-word;overflow-wrap:break-word;">@(article.Description.Length > 150 ? article.Description.Substring(0, 150) : article.Description)</p>
+
+                                    <small class="firstsmall"><a class="bg-orange" href="tech-category-01.html" title="">@article.Category.Name </a></small>
+                                    <small><a href="tech-single.html" title="">@article.CreatedDate?.ToString("dd/MM/yyyy")</a></small>
+                                    <small><a href="tech-author.html" title="">@article.User.FirstName @article.User.LastName</a></small>
+                                    <small><a href="tech-single.html" title=""><i class="fa fa-eye"></i> @article.ViewCount</a></small>
+                                </div><!-- end meta -->
+                            </div>
+
+                            <!-- end blog-box -->
+                            <hr class="invis">
+                        }
+
+                    </div><!-- end blog-list -->
+                </div><!-- end page-wrapper -->
+
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-start">
+                                @if (Model.Item1.showProvious)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-route-keyword="@Model.Item2" asp-route-currentPage="@(Model.Item1.currentPage-1)" asp-route-pageSize="@Model.Item1.pageSize">Önceki sayfa</a>
+                                    </li>
+                                }
+
+                                @for (int i = 1; i <= Model.Item1.TotalPages; i++)
+                                {
+                                    <li class="page-item @(i==Model.Item1.currentPage ? "active":"")">
+                                        <a class="page-link" asp-route-keyword="@Model.Item2" asp-route-currentPage="@i" asp-route-pageSize="@Model.Item1.pageSize">@i</a>
+                                    </li>
+                                }
+
+                                @if (Model.Item1.showNext)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-route-keyword="@Model.Item2" asp-route-currentPage="@(Model.Item1.currentPage+1)" asp-route-pageSize="@Model.Item1.pageSize">Sonraki sayfa</a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    </div><!-- end col -->
+                </div><!-- end row -->
+
+            </div><!-- end col -->
+          
+
+        </div><!-- end row -->
+    </div><!-- end container -->
+</section>

@@ -1,0 +1,48 @@
+﻿@using Blog.Entity.DTOs.Message
+@model List<MessageViewModel>
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"> Mesajlar </h4>
+
+    <!-- Basic Bootstrap Table -->
+    <div class="card">
+        <h5 class="card-header">Gelen Mesajlar</h5>
+
+
+        <div class="table-responsive text-nowrap m-5">
+           
+            <br />
+            <table class="table table-bordered" id="usersTable" width="100%" callspacing="0">
+                <thead>
+                    <tr>
+                        <th>İsim ve soyisim</th>
+                        <th>Email</th>
+                        <th>Telefon no :</th>
+                        <th>Konu</th>
+                        <th>Mesaj</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    @foreach (var a in Model)
+                    {
+                        <tr name="@a.Id">
+                            <td>@a.Name</td>
+                            <td>@a.Email</td>
+                            <td>@a.Tel</td>
+                            <td>@a.Subject</td>
+                            <td>@a.Body</td>
+                            <td>
+                                <a class="btn btn-danger  btn-sm" data-id="@a.Id" asp-area="Admin" asp-controller="Messages" asp-action="Delete" asp-route-msgId="@a.Id"><i class="bx bxs-trash"></i></a>
+                              
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--/ Basic Bootstrap Table -->
+</div>
+

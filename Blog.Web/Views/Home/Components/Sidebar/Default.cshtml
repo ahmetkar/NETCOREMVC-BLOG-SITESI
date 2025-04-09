@@ -1,0 +1,165 @@
+﻿@model (List<ArticleIndexViewModel>,List<ArticleIndexViewModel>,Dictionary<string,string>,Dictionary<string,string>)
+<!--Sidebar col-->
+<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+    <div class="sidebar">
+        <div class="widget">
+            <h2 class="widget-title">Follow Us</h2>
+
+            <div class="row text-center">
+
+                @if (!Model.Item4["facebook"].Equals(null)){
+                    @if (!Model.Item4["facebook"].Equals(""))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+
+                            <a href="@Model.Item4["facebook"];" class="social-button facebook-button">
+                                <i class="fa fa-facebook"></i>
+
+                            </a>
+                        </div>
+                    }
+                }
+
+                @if (!Model.Item4["twitter"].Equals(null))
+                {
+                    @if (!Model.Item4["twitter"].Equals(""))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                            <a href="@Model.Item4["twitter"]" class="social-button twitter-button">
+                                <i class="fa fa-twitter"></i>
+
+                            </a>
+                        </div>
+                    }
+                }
+
+
+                @if (!Model.Item4["instagram"].Equals(null))
+                {
+                    @if (!Model.Item4["instagram"].Equals(""))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                            <a href="@Model.Item4["instagram"]" class="social-button instagram-button">
+                                <i class="fa fa-instagram"></i>
+
+                            </a>
+                        </div>
+                    }
+                }
+
+                @if (!Model.Item4["youtube"].Equals(null))
+                {
+                    @if (!Model.Item4["youtube"].Equals(""))
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                            <a href="@Model.Item4["youtube"]" class="social-button youtube-button">
+                                <i class="fa fa-youtube"></i>
+
+                            </a>
+                        </div>
+                    }
+                }
+            </div>
+        </div><!-- end widget -->
+        @*most-commented most-viewed last-added*@
+
+
+        <div class="widget">
+            @{
+                var top = Model.Item3["top"];
+            }
+            @if(top=="most-commented"){
+                <h2 class="widget-title">En çok yorum alanlar</h2>
+            }else if(top=="last-added"){
+                <h2 class="widget-title">Son eklenenler</h2>
+            }else {
+                <h2 class="widget-title">En çok tıklananlar</h2>
+            }
+            
+
+
+            <div class="trend-videos">
+                @foreach (var i in Model.Item1)
+                {
+                    <div class="blog-box">
+                        <div class="post-media">
+                            <a asp-controller="Home" asp-action="Detail" asp-route-id="@i.Id" title="">
+                                <img src="~/images/@i.Image.FileName" alt="" class="img-fluid">
+                                <div class="hovereffect">
+                                    
+                                </div><!-- end hover -->
+                            </a>
+                        </div><!-- end media -->
+                        <div class="blog-meta">
+                            <h4 class="for-overflow"><a asp-controller="Home" asp-action="Detail" asp-route-id="@i.Id" title="">@i.Title</a></h4>
+                        </div><!-- end meta -->
+                    </div><!-- end blog-box -->
+
+                    <hr class="invis">
+                }
+
+
+            </div><!-- end videos -->
+        </div><!-- end widget -->
+
+
+        <div class="widget">
+           @{ var bottom = Model.Item3["bottom"];
+            }
+            @if (bottom == "most-viewed")
+            {
+                <h2 class="widget-title">En çok tıklananlar</h2>
+            }
+            else if (bottom == "last-added")
+            {
+                <h2 class="widget-title">Son eklenenler</h2>
+            }
+            else
+            {
+                <h2 class="widget-title">En çok yorum alanlar</h2>
+            }
+            
+            <div class="blog-list-widget">
+                <div class="list-group">
+
+                    @foreach (var i in Model.Item2)
+                    {
+                        <a asp-controller="Home" asp-action="Detail" asp-route-id="@i.Id" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="w-100 justify-content-between">
+                                <img src="~/images/@i.Image.FileName" alt="" class="img-fluid float-left">
+                                <h5 class="mb-1 for-overflow">@i.Title</h5>
+                                <small>@i.CreatedDate</small>
+                            </div>
+                        </a>
+                    }
+
+                    
+
+                    
+                    
+                </div>
+            </div><!-- end blog-list -->
+        </div><!-- end widget -->
+
+        <div class="widget">
+            <div class="banner-spot clearfix">
+                <div class="banner-img">
+                    <img src="~/blogtheme/upload/banner_03.jpg" alt="" class="img-fluid">
+                </div><!-- end banner-img -->
+            </div><!-- end banner -->
+        </div><!-- end widget -->
+
+
+
+
+        
+
+
+    </div><!-- end sidebar -->
+</div><!-- end col -->
+
+        
+                   
+
+                    
+

@@ -1,0 +1,46 @@
+﻿@model List<CategoryViewModel>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Kategori Yönetimi/</span> Kategoriler</h4>
+
+    <!-- Basic Bootstrap Table -->
+    <div class="card">
+        <h5 class="card-header">Kategoriler</h5>
+
+
+        <div class="table-responsive text-nowrap m-5">
+            <a class="btn btn-success mb-3" asp-area="Admin" asp-controller="Category" asp-action="Add">
+                Kategori Ekle <i class="bx bx-plus"></i>
+            </a>
+            <br />
+            <table class="table table-bordered" id="categoriesTable" width="100%" callspacing="0">
+                <thead>
+                    <tr>
+                        <th>Kategori Adı</th>
+                        <th>Oluşturulma tarihi</th>
+                        <th>Oluşturan Kişi</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    @foreach (var a in Model)
+                    {
+                        <tr name="@a.Id">
+                            <td>@a.Name</td>
+                            <td>@a.CreatedDate.ToShortDateString()</td>
+                            <td>@a.CreatedBy</td>
+                            <td>
+                                <a class="btn btn-primary btn-sm" data-id="@a.Id" asp-area="Admin" asp-controller="Category" asp-action="Update" asp-route-categoryId="@a.Id"><i class="bx bxs-edit"></i></a>
+                                <a class="btn btn-danger btn-sm" data-id="@a.Id" asp-area="Admin" asp-controller="Category" asp-action="Delete" asp-route-categoryId="@a.Id"><i class="bx bx-minus-circle"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--/ Basic Bootstrap Table -->
+</div>
+
+@section Scripts {
+    <script src="~/js/categoryIndex.js" type="application/ecmascript"></script>
+}

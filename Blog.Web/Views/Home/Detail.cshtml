@@ -1,0 +1,277 @@
+﻿@model ArticleViewModel
+<section class="section single-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                <div class="page-wrapper">
+                    <div class="blog-title-area text-center">
+
+                        <span class="color-orange"><a asp-controller="Home" asp-action="CategoryDetail" asp-route-category="@Model.Category.Id"  title="">@Model.Category.Name</a></span>
+
+                        <h3>@Model.Title</h3>
+
+                        <div class="blog-meta big-meta">
+                            <small><a title="">@Model.CreatedDate.ToString("dd/MM/yyyy")</a></small>
+                            <small><a href="tech-author.html" title="">@Model.User.FirstName @Model.User.LastName</a></small>
+                            <small><a href="#" title=""><i class="fa fa-eye"></i> @Model.ViewCount</a></small>
+                        </div><!-- end meta -->
+
+                        <div class="post-sharing">
+                            <ul class="list-inline">
+                                <li><a href="#" class="fb-button btn btn-primary"><i class="fa fa-facebook"></i> <span class="down-mobile">Share on Facebook</span></a></li>
+                                <li><a href="#" class="tw-button btn btn-primary"><i class="fa fa-twitter"></i> <span class="down-mobile">Tweet on Twitter</span></a></li>
+                                <li><a href="#" class="gp-button btn btn-primary"><i class="fa fa-google-plus"></i></a></li>
+                            </ul>
+                        </div><!-- end post-sharing -->
+                    </div><!-- end title -->
+
+                    <div class="single-post-media">
+                        <img style="width:800px;height:460px;" src="~/images/@Model.Image.FileName" alt="" class="img-fluid">
+                    </div><!-- end media -->
+
+                    <div class="blog-content">  
+                        <div class="pp">
+                            <p style="word-wrap:break-word;overflow-wrap:break-word;">@Model.Description</p>
+
+                        </div><!-- end pp -->
+
+                        <img src="upload/tech_menu_09.jpg" alt="" class="img-fluid img-fullwidth">
+
+                        <div class="pp">
+                            <p style="word-wrap:break-word;overflow-wrap:break-word;">@Model.Content</p>
+                        </div><!-- end pp -->
+                    </div><!-- end content -->
+
+                    <div class="blog-title-area">
+                       
+
+                        <div class="post-sharing">
+                           
+                        </div><!-- end post-sharing -->
+                    </div><!-- end title -->
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="banner-spot clearfix">
+                                <div class="banner-img">
+                                    <img src="~/blogtheme/upload/banner_01.jpg" alt="" class="img-fluid">
+                                </div><!-- end banner-img -->
+                            </div><!-- end banner -->
+                        </div><!-- end col -->
+                    </div><!-- end row -->
+
+                    <hr class="invis1">
+
+
+
+
+                    <div class="custombox prevnextpost clearfix">
+                        <div class="row">
+                            @if (ViewBag.PrevArticle != null)
+                            {
+                                var prevPost = (ArticleViewModel)ViewBag.PrevArticle;
+
+                                <div class="col-lg-6">
+                                    <div class="blog-list-widget">
+                                        <div class="list-group">
+                                            <a asp-controller="Home" asp-action="Detail" asp-route-id="@prevPost.Id"  class="list-group-item list-group-item-action flex-column align-items-start">
+                                                <div class="w-100 justify-content-between text-right">
+                                                    <img src="~/images/@prevPost.Image.FileName" alt="" class="img-fluid float-right">
+                                                    <h5 class="mb-1 for-overflow">@prevPost.Title</h5>
+                                                    <small>Önceki bloğa git</small>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div><!-- end col -->
+                            }
+
+                            @if (ViewBag.NextArticle != null)
+                            {
+                                var nextPost = (ArticleViewModel)ViewBag.NextArticle;
+
+                                <div class="col-lg-6">
+                                    <div class="blog-list-widget">
+                                        <div class="list-group">
+                                            <a asp-controller="Home" asp-action="Detail" asp-route-id="@nextPost.Id" class="list-group-item list-group-item-action flex-column align-items-start">
+                                                <div class="w-100 justify-content-between">
+                                                    <img src="~/images/@nextPost.Image.FileName" alt="" class="img-fluid float-left">
+                                                    <h5 class="mb-1 for-overflow">@nextPost.Title</h5>
+                                                    <small>Sonraki bloğa git</small>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div><!-- end col -->
+                            }
+                        </div><!-- end row -->
+                    </div><!-- end author-box -->
+
+                    <hr class="invis1">
+
+                    <div class="custombox authorbox clearfix">
+                        <h4 class="small-title">Yazar hakkında</h4>
+                        <div class="row">
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                                <img src="~/images/@Model.User.Image.FileName" alt="" class="img-fluid rounded-circle"> 
+                            </div><!-- end col -->
+
+                            <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12">
+                                <h4><a href="#">@Model.User.FirstName @Model.User.LastName</a></h4>
+                                <p class="for-overflow">@Model.User.Biography</p>
+
+                                <div class="topsocial">
+                                    <a href="#" data-toggle="tooltip" data-placement="bottom" title="Facebook"><i class="fa fa-facebook"></i></a>
+                                    <a href="#" data-toggle="tooltip" data-placement="bottom" title="Youtube"><i class="fa fa-youtube"></i></a>
+                                    <a href="#" data-toggle="tooltip" data-placement="bottom" title="Pinterest"><i class="fa fa-pinterest"></i></a>
+                                    <a href="#" data-toggle="tooltip" data-placement="bottom" title="Twitter"><i class="fa fa-twitter"></i></a>
+                                    <a href="#" data-toggle="tooltip" data-placement="bottom" title="Instagram"><i class="fa fa-instagram"></i></a>
+                                    <a href="#" data-toggle="tooltip" data-placement="bottom" title="Website"><i class="fa fa-link"></i></a>
+                                </div><!-- end social -->
+
+                            </div><!-- end col -->
+                        </div><!-- end row -->
+                    </div><!-- end author-box -->
+
+                    <hr class="invis1">
+                  
+                 
+                        <div id="error" class="alert alert-danger" role="alert" style="display:none">
+                      
+                        </div><br />
+
+
+
+                    <div id="success" class="alert alert-success" role="alert" style="display:none">
+                       
+                           
+                            </div><br />   
+                   
+
+                    @if(ViewBag.MayLikeArticles != null){
+                        <div class="custombox clearfix">
+                            <h4 class="small-title">Şunlarıda beğenebilirsiniz : </h4>
+                            <div class="row">
+                                @foreach (var i in (List<ArticleViewModel>)ViewBag.MayLikeArticles)
+                                {
+                                    <div class="col-lg-6">
+                                        <div class="blog-box">
+                                            <div class="post-media">
+                                                <a asp-controller="Home" asp-action="Detail" asp-route-id="@i.Id" title="">
+                                                    <img src="~/images/@i.Image.FileName" alt="" class="img-fluid">
+                                                    <div class="hovereffect">
+                                                        <span class=""></span>
+                                                    </div><!-- end hover -->
+                                                </a>
+                                            </div><!-- end media -->
+                                            <div class="blog-meta">
+                                                <h4><a class="for-overflow" asp-controller="Home" asp-action="Detail" asp-route-id="@i.Id" title="">@i.Title</a></h4>
+                                                <small><a href="#" title="">@i.Category.Name</a></small>
+                                                <small><a href="#" title="">@i.CreatedDate</a></small>
+                                            </div><!-- end meta -->
+                                        </div><!-- end blog-box -->
+                                    </div><!-- end col -->
+                                }
+
+                            </div><!-- end row -->
+                        </div><!-- end custom-box -->
+
+                        <hr class="invis1">
+                    }
+
+                    <div class="custombox clearfix">
+                         @if(Model.Comments != null){
+                        <h4 class="small-title">@Model.CommentCount tane yorum yapıldı</h4>
+                        <div class="row">
+                            <div class="col-lg-12">
+                               
+                                <div class="comments-list">
+                                    @foreach (var i in Model.Comments)
+                                    {
+                                      @if (i.IsAprroved)
+                                       {
+                                        <div class="media">
+                                           
+                                            <a class="media-left" href="#">
+                                                <img src="~/blogtheme/upload/author.jpg" alt="" class="rounded-circle">
+                                            </a>
+                                            <div class="media-body for-overflow">
+                                                <h4 class="media-heading user_name for-overflow">
+                                                    @i.Name <small>
+                                                        @i.CreatedDate?.ToString("dd/MM/yyyy")</small></h4>
+                                                    @if(i.CommentText.Length>200){
+                                                    <p style="word-wrap:break-word;overflow-wrap:break-word;max-width:30%">@i.CommentText</p>
+                                                    }else {
+                                                        <p style="word-wrap:break-word;overflow-wrap:break-word;max-width:50%">@i.CommentText</p>
+                                                    }
+
+                                          
+                                            </div>
+                                        </div>
+                                        }else if(!i.IsAprroved && i.Visitor.IpAdress == TempData["myIp"] as string){
+                                                <div class="media">
+                                                    <a class="media-left" href="#">
+                                                        <img src="~/blogtheme/upload/author.jpg" alt="" class="rounded-circle">
+                                                    </a>
+                                                    <div class="media-body for-overflow">
+                                                        <h4 class="media-heading user_name for-overflow">
+                                                            @i.Name <small>
+                                                                @i.CreatedDate?.ToString("dd/MM/yyyy")
+                                                            </small> <small> Yorumunuz onay bekliyor..</small>
+                                                        </h4>
+                                                        @if (i.CommentText.Length > 200)
+                                                        {
+                                                            <p style="word-wrap:break-word;overflow-wrap:break-word;max-width:30%">@i.CommentText</p>
+                                                        }
+                                                        else
+                                                        {
+                                                            <p style="word-wrap:break-word;overflow-wrap:break-word;max-width:50%">@i.CommentText</p>
+                                                        }
+
+
+                                                    </div>
+                                                </div>
+                                        }
+                                    }
+                                    </div>
+                                </div><!-- end col -->
+                            </div>
+
+                            <!-- end row -->
+                                  }else {
+                                      <h3>Bu makale için yorum yapılmadı.</h3>
+                                  }
+
+
+                                        
+                                   
+                            </div><!-- end custom-box -->
+
+                            <hr class="invis1">
+
+                            <div class="custombox clearfix">
+                               
+                                <h4 class="small-title">Yorum yapın</h4>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <form id="commentForm" class="form-wrapper" method="post">
+                                            <input name="id" type="hidden" value="@Model.Id"/>
+                                            <input name="name" type="text" class="form-control" placeholder="Your name">
+                                            <input name="email" type="text" class="form-control" placeholder="Email address">
+                                            <textarea name="text" class="form-control" placeholder="Your comment"></textarea>
+                                            <button type="submit" class="btn btn-primary">Submit Comment</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- end page-wrapper -->
+                    </div><!-- end col -->
+
+                    @await Component.InvokeAsync("Sidebar")
+                </div><!-- end row -->
+            </div><!-- end container -->
+        </section>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/sendComment.js"></script>
+

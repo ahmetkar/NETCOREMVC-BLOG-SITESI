@@ -1,0 +1,83 @@
+﻿@using Blog.Entity.DTOs.Category;
+@model List<MenuCategoryViewModel>
+
+
+
+<li class="nav-item dropdown has-submenu menu-large hidden-md-down hidden-sm-down hidden-xs-down">
+    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Haberler</a>
+    <ul class="dropdown-menu megamenu" aria-labelledby="dropdown01">
+        <li>
+            <div class="container">
+                <div class="mega-menu-content clearfix">
+                    <div class="tab">
+
+                        @{
+                            int j = 0;
+                            string j_ = "";
+
+                        }
+                        @foreach(var i in Model){
+                            
+                            if (j <= 9) j_ = "cat0" + j.ToString();
+                            else j_ = "cat"+j.ToString();
+                            <button class="tablinks @(j==0 ? "active" : "")" onclick="openCategory(event, '@j_')">@i.Name</button>
+                            j+=1;
+                        }
+
+                    </div>
+
+                    <div class="tab-details clearfix">
+                        @{
+                            int k = 0;
+                            string k_ = "";
+                        }
+                        @foreach(var i in Model){
+                            @if(i!=null){
+                               
+                                if (k <= 9) k_ = "cat0" + k.ToString();
+                                else k_ = "cat"+k.ToString();
+
+                                  
+                              
+                                <div id="@k_" class="tabcontent @(k==0 ? "active" : "")">
+                                
+                                    <div class="row">
+                                        @foreach (var cart in i.Articles)
+                                        {
+                                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                                <div class="blog-box">
+                                                    <div class="post-media">
+                                                        <a title="">
+                                                            <img src="~/blogtheme/upload/tech_menu_01.jpg" alt="" class="img-fluid">
+                                                            <div class="hovereffect">
+                                                            </div><!-- end hover -->
+                                                            <span class="menucat">@i.Name</span>
+                                                        </a>
+                                                    </div><!-- end media -->
+                                                    <div class="blog-meta">
+                                                        <h4><a class="for-overflow" title="">
+                                                                @if(cart.Title.Length > 25) {
+                                                                    @cart.Title.Substring(0, 25)
+                                                                }else {
+                                                                    @cart.Title
+                                                                }
+                                                            </a></h4>
+                                                    </div><!-- end meta -->
+                                                </div><!-- end blog-box -->
+                                            </div>
+                                        }
+
+                                    </div><!-- end row -->
+                                </div>
+                            }
+                            k += 1;
+                        }
+
+                        
+
+                    </div><!-- end tab-details -->
+                </div><!-- end mega-menu-content -->
+            </div>
+        </li>
+    </ul>
+</li>

@@ -1,0 +1,42 @@
+﻿@using Blog.Entity.DTOs.Images
+@model List<ImageViewModel>?
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <!-- Grid Card -->
+
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Çöp kutusu</span></h4>
+        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+            @foreach (var i in Model)
+            {
+                <div class="col">
+                    <div class="card h-100">
+                        <img class="card-img-top" src="~/images/@i.FileName" alt="Card image cap" />
+                        <div class="card-body">
+                            <h6 class="card-title">@i.CreatedBy ,@i.CreatedDate tarihinde oluşturuldu</h6>
+                            <p class="card-text">
+                                Dosya yolu : @i.FileName<br />
+                                Şu makalelerde kullanılır :<br />
+                                @foreach (var j in i.Articles)
+                                {
+                                    @j.Title <br />
+                                }<br />
+                                Şu kullanıcılar kullanılır :<br />
+                                @foreach (var j in i.Users)
+                                {
+                                    @j.UserName <br />
+                                }
+
+                            </p>
+                            <a asp-controller="Media" asp-action="ForceDelete" asp-route-imageId="@i.Id" class="btn btn-danger">Tamamen Sil</a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+
+    </div>
+</div>

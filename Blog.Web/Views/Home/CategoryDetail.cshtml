@@ -1,0 +1,103 @@
+﻿@using Blog.Entity.DTOs;
+@model (ArticleListViewModel,Guid,CategoryViewModel)
+
+
+<div id="wrapper">
+
+    <div class="page-title lb single-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                    <h2><i class="fa fa-gears bg-orange"></i> @Model.Item3.Name <small class="hidden-xs-down hidden-sm-down">.... </small></h2>
+                </div><!-- end col -->
+                <div class="col-lg-4 col-md-4 col-sm-12 hidden-xs-down hidden-sm-down">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Blog</a></li>
+                        <li class="breadcrumb-item active">@Model.Item3.Name</li>
+                    </ol>
+                </div><!-- end col -->                    
+            </div><!-- end row -->
+        </div><!-- end container -->
+    </div><!-- end page-title -->
+
+    <section class="section">
+        <div class="container">
+            <div class="row">
+                @await Component.InvokeAsync("Sidebar")
+       
+
+                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                    <div class="page-wrapper">
+                        <div class="blog-grid-system">
+                            <div class="row">
+
+                                @foreach (var article in Model.Item1.Articles)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="blog-box">
+                                            <div class="post-media">
+                                                <a asp-controller="Home" asp-action="Detail" asp-route-id="@article.Id" title="">
+                                                    <img width="600" height="500" src="~/images/@article.Image.FileName" alt="" class="img-fluid">
+                                                    <div class="hovereffect">
+                                                        <span></span>
+                                                    </div><!-- end hover -->
+                                                </a>
+                                            </div><!-- end media -->
+                                            <div class="blog-meta big-meta">
+                                                <span class="color-orange"><a href="#" title="">@article.Category.Name</a></span>
+                                                <h4 class="for-overflow"><a asp-controller="Home" asp-action="Detail" asp-route-id="@article.Id" title="">@article.Title</a></h4>
+                                                <p class="for-overflow">@article.Description</p>
+                                                <small><a href="#" title="">@article.CreatedDate</a></small>
+                                                <small><a href="#" title="">@article.CreatedBy</a></small>
+                                                <small><a href="#" title=""><i class="fa fa-eye"></i>@article.ViewCount</a></small>
+                                            </div><!-- end meta -->
+                                        </div><!-- end blog-box -->
+                                    </div><!-- end col -->
+                                }
+
+                             
+
+                                    
+
+                                </div><!-- end row -->
+                            </div><!-- end blog-grid-system -->
+                        </div><!-- end page-wrapper -->
+
+                        <hr class="invis3">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-start">
+                                    @if (Model.Item1.showProvious)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" asp-route-category="@Model.Item2" asp-route-currentPage="@(Model.Item1.currentPage-1)" asp-route-pageSize="@Model.Item1.pageSize">Önceki sayfa</a>
+                                        </li>
+                                    }
+
+                                    @for (int i = 1; i <= Model.Item1.TotalPages; i++)
+                                    {
+                                        <li class="page-item @(i==Model.Item1.currentPage ? "active":"")">
+                                            <a class="page-link" asp-route-category="@Model.Item2" asp-route-currentPage="@i" asp-route-pageSize="@Model.Item1.pageSize">@i</a>
+                                        </li>
+                                    }
+
+                                    @if (Model.Item1.showNext)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" asp-route-category="@Model.Item2" asp-route-currentPage="@(Model.Item1.currentPage+1)" asp-route-pageSize="@Model.Item1.pageSize">Sonraki sayfa</a>
+                                        </li>
+                                    }
+                                    </ul>
+                                </nav>
+                            </div><!-- end col -->
+                        </div><!-- end row -->
+                    </div><!-- end col -->
+                </div><!-- end row -->
+            </div><!-- end container -->
+        </section>
+
+   </div>
+

@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+    <!-- Mobile Metas
+
+     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    
+    <script type="importmap"></script>
+   
+    <link href="~/blogtheme/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Site Icons -->
+    <link rel="shortcut icon" href="~/blogtheme/images/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="~/blogtheme/images/apple-touch-icon.png">
+
+    <!-- Design fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+
+
+    <!-- FontAwesome Icons core CSS -->
+    <link href="~/blogtheme/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="~/blogtheme/style.css" rel="stylesheet">
+    
+    <!-- Responsive styles for this template -->
+    <link href="~/blogtheme/css/responsive.css" rel="stylesheet">
+
+    <!-- Colors for this template -->
+    <link href="~/blogtheme/css/colors.css" rel="stylesheet">
+
+    <!-- Version Tech CSS for this template -->
+    <link href="~/blogtheme/css/version/tech.css" rel="stylesheet">
+    <link href="~/css/mystyle.css" rel="stylesheet">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+</head>
+
+<body>
+
+    <div id="wrapper">
+        <header class="tech-header header">
+            <div class="container-fluid">
+                <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
+                    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                   @await Component.InvokeAsync("Logo")
+                    <div class="collapse navbar-collapse justify-content-center" id="navbarCollapse">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Index">Ana sayfa</a>
+                            </li>
+                            @await Component.InvokeAsync("Categories")
+                            @await Component.InvokeAsync("PrimeCategories")
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Iletisim">İletişim</a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav mr-2">
+                            <form id="search_form" asp-controller="Home" asp-action="Search" class="d-flex" role="search" method="GET">
+                                <input name="keyword" class="form-control search-box me-2" type="text" placeholder="Ne aradığınızı yazın.." aria-label="Search">
+                                <button class="btn btn-outline-success" type="submit" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ara">
+                                    Ara<!-- Bootstrap ikon -->
+                                </button>
+                            </form>
+                        </ul>
+                    </div>
+                </nav>
+            </div><!-- end container-fluid -->
+        </header><!-- end market-header -->
+
+   
+     
+    @RenderBody()
+           
+
+    @await Component.InvokeAsync("Footer")
+
+            
+
+    </div><!-- end wrapper -->
+    <!-- Core JavaScript
+       
+          
+    ================================================== -->
+
+
+  
+   
+    
+    <script src="~/blogtheme/js/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/blogtheme/js/bootstrap.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+
+    <script src="~/blogtheme/js/tether.min.js"></script>
+    <script src="~/blogtheme/js/custom.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+   
+</body>
+</html>

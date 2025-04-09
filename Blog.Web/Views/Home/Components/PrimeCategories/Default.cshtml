@@ -1,0 +1,10 @@
+﻿@using Blog.Entity.DTOs.Category;
+@model List<CategoryViewModel>
+
+@foreach (var cat in Model) {
+    
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="Home" asp-action="CategoryDetail" asp-route-category="@cat.Id">@cat.Name</a>
+    </li>
+}
+

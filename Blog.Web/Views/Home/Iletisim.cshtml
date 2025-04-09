@@ -1,0 +1,55 @@
+﻿@using Blog.Entity.DTOs.Message
+@using Blog.Entity.Entities
+@model Page
+
+<div class="page-title lb single-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                <h2><i class="fa fa-envelope-open-o bg-orange"></i> İletişim </h2>
+            </div><!-- end col -->
+          
+        </div><!-- end row -->
+    </div><!-- end container -->
+</div><!-- end page-title -->
+
+<section class="section wb">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-wrapper">
+
+                    <div id="error" class="alert alert-danger" role="alert" style="display:none">
+                    </div><br />
+
+
+
+                    <div id="success" class="alert alert-success" role="alert" style="display:none">
+                    </div><br />
+                    <div class="row">
+
+
+                        <div class="col-lg-5">
+                            <h4>Açıklama</h4>
+                            <p>@Model.PageContent</p>
+                        </div>
+                        <div class="col-lg-7">
+                            <form id="iletisimform" method="post" class="form-wrapper">
+                                <input name="name" type="text" class="form-control" placeholder="İsim ve soyisminiz :">
+                                <input name="email"  type="text" class="form-control" placeholder="Email addresi">
+                                <input name="tel" type="text" class="form-control" placeholder="Telefon">
+                                <input name="subject"  type="text" class="form-control" placeholder="Konu">
+                                <textarea name="body"  class="form-control" placeholder="Senin mesajın"></textarea>
+                                <button type="submit" class="btn btn-primary">Gönder <i class="fa fa-envelope-open-o"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div><!-- end page-wrapper -->
+            </div><!-- end col -->
+        </div><!-- end row -->
+    </div><!-- end container -->
+</section>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/sendMessage.js"></script>
+

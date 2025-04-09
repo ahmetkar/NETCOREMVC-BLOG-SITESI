@@ -1,0 +1,158 @@
+﻿@model UserProfileViewModel   
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Profil </h4>
+
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="nav nav-pills flex-column flex-md-row mb-3">
+                    <li class="nav-item">
+                        <a class="nav-link active" ><i class="bx bx-user me-1"></i> Hesap bilgileri</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"><i class="bx bx-bell me-1"></i> Bildirimler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"><i class="bx bx-link-alt me-1"></i> Bağlantılar</a>
+                    </li>
+                </ul>
+                <div class="card mb-4">
+                    <h5 class="card-header">Hesap Detayları</h5>    
+                    <!-- Account -->
+                    <form asp-area="Admin" asp-controller="User" asp-action="Profil" method="POST" enctype="multipart/form-data">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start align-items-sm-center gap-4">
+                                <input type="hidden" asp-for="CurrentImage" />
+                               
+                                <img src="~/images/@Model.CurrentImage"
+                                 alt="user-avatar"  
+                                 class="d-block rounded"
+                                 height="100"
+                                 width="100"
+                                 id="uploadedAvatar" />
+                                
+                            <div class="button-wrapper">
+                                <label asp-for="Photo" class="btn btn-primary me-2 mb-4" tabindex="0">
+                                    <span class="d-none d-sm-block">Fotoğraf yükleyin</span>
+                                        <i class="bx bx-upload d-block d-sm-none"></i>
+                                    
+                                    <input type="file"
+                                           asp-for="Photo"  
+                                           id="upload"
+                                           class="account-file-input"
+                                           accept="image/*" />
+                                    </label>
+                                <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
+                                    <i class="bx bx-reset d-block d-sm-none"></i>
+                                    <span class="d-none d-sm-block">Reset</span>
+                                </button></label>
+
+                                <p class="text-muted mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-0" />
+                    <div class="card-body">
+                        
+                            <div asp-validation-summary="All"></div>
+                            <div class="row">
+                                <div class="mb-3 col-md-6">
+                                    <label asp-for="FirstName" class="form-label">İsim : </label>
+                                    <input asp-for="FirstName" class="form-control"
+                                           type="text"
+                                           name="firstName"
+                                         
+                                           autofocus />
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label asp-for="LastName" class="form-label">Soyisim : </label>
+                                    <input asp-for ="LastName" class="form-control" type="text" name="lastName"/>
+                                </div>
+                                <div class="form-group">
+
+                                    <label asp-for="Biography" class="form-label">Biyografi: </label>
+                                    <textarea asp-for="Biography"
+                                              type="text"
+                                              class="form-control mb-3"
+                                              id="defaultFormControlInput"
+                                              placeholder="Kullanıcı hakkında birşeyler yazın.."
+                                              aria-describedby="defaultFormControlHelp"></textarea>
+
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label asp-for="CurrentPassword" class="form-label">Şuanki şifre : </label>
+                                    <input asp-for="CurrentPassword" class="form-control" type="password" name="currentpassword"/>
+                                </div>
+                                <div class="mb-3 col-md-6">
+                                    <label asp-for="NewPassword" class="form-label">Yeni şifre : </label>
+                                    <input asp-for="NewPassword" class="form-control" type="password" name="newpassword" />
+                                </div>
+
+                               
+                                <div class="mb-3 col-md-6">
+                                    <label asp-for="Email" class="form-label">E-mail</label>
+                                    <input asp-for="Email" class="form-control"
+                                           type="text"
+                                           name="email"
+                                           placeholder="john.doe@example.com" />
+                                </div>
+                               
+                                <d  iv class="mb-3 col-md-6">
+                                    <label class="form-label" asp-for="@Model.PhoneNumber">Telefon nu :</label>
+                                    <div class="input-group input-group-merge">
+                                        <input asp-for="PhoneNumber" type="text"
+                                               name="phoneNumber"
+                                               class="form-control"
+                                               placeholder="202 555 0111" />
+                                    </div>
+                                </d>
+                               
+                                
+                               
+                             
+                            </div>
+                            <div class="mt-2">
+                                <button type="submit" class="btn btn-primary me-2">Değişiklikleri Kaydet</button>       
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /Account -->
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <!-- / Content -->
+    <!-- Footer -->
+    <footer class="content-footer footer bg-footer-theme">
+        <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+            <div class="mb-2 mb-md-0">
+                ©
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+                , made with ❤️ by
+                <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
+            </div>
+            <div>
+                <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
+                <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
+
+                <a href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
+                   target="_blank"
+                   class="footer-link me-4">Documentation</a>
+
+                <a href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
+                   target="_blank"
+                   class="footer-link me-4">Support</a>
+            </div>
+        </div>
+    </footer>
+    <!-- / Footer -->
+
+    <div class="content-backdrop fade"></div>
+</div>
+<!-- Content wrapper -->

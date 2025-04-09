@@ -1,0 +1,40 @@
+﻿@model List<ArticleIndexViewModel>
+
+
+
+@foreach(var article in Model){
+
+
+    <div class="blog-box row">
+
+        <div class="col-md-4">
+            <div class="post-media">
+                <a asp-controller="Home" asp-action="Detail" asp-route-id="@article.Id" title="">
+                    @*<img src="~/blogtheme/upload/tech_blog_01.jpg" alt="" class="img-fluid">*@
+                    <img width="600" height="500" src="~/images/@article.Image.FileName" alt="" class="img-fluid">
+
+                    <div class="hovereffect"></div>
+                </a>
+            </div><!-- end media -->
+        </div><!-- end col -->
+
+        <div class="blog-meta big-meta col-md-8">
+            <h4 class="for-overflow">
+                <a asp-controller="Home" asp-action="Detail" asp-route-id="@article.Id" title="">@article.Title</a>
+            </h4>
+
+            <p class="for-overflow">@(article.Description.Length > 150 ? article.Description.Substring(0, 150) : article.Description)</p>
+
+            <small class="firstsmall"><a class="bg-orange" asp-controller="Home" asp-action="CategoryDetail" asp-route-category="@article.Category.Id" title="">@article.Category.Name </a></small>
+            <small> <a href="#" title="">@article.CreatedDate.ToString("dd/MM/yyyy")</a></small>
+            <small><a asp-controller="Home" asp-action="AuthorDetail" asp-route-authorName="@article.User.FirstName" title="">@article.User.FirstName @article.User.LastName</a></small>
+            <small><a href="#" title=""><i class="fa fa-eye"></i> @article.ViewCount</a></small>
+        </div><!-- end meta -->
+    </div>
+
+    <!-- end blog-box -->
+    <hr class="invis">
+}
+
+
+

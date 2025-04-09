@@ -1,0 +1,202 @@
+﻿@using Blog.Entity.DTOs.SiteSettings
+@model SiteSettingsUpdateModel
+
+
+<!-- Content wrapper -->
+<div class="content-wrapper">
+    <!-- Content -->
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Site Ayarları</span></h4>
+
+
+        <div class="row">
+            <form asp-controller="Settings" asp-action="Index" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="All"></div>
+                <div class="col-md-12">
+                    <div class="card mb-4">
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <label asp-for="TopArticleSetting" class="form-label">En üst taraftaki manşetlerde ne görünsün:</label>
+                                <select asp-for="TopArticleSetting"
+                                        type="text"
+                                        class="form-control mb-3"
+                                        id="defaultFormControlInput"
+                                        aria-describedby="defaultFormControlHelp">
+                                            <option value="most-commented">En çok yorum alanlar</option>
+                                            <option value="most-viewed">En çok görüntülenenler</option>
+                                            <option value="last-added">Yeni eklenenler</option>
+                                </select>
+                              
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="SidebarTopArticleSetting" class="form-label">Yan menüde üstte neler görünsün ::</label>
+                                <select asp-for="SidebarTopArticleSetting"
+                                        type="text"
+                                        class="form-control mb-3"
+                                        id="defaultFormControlInput"
+                                        aria-describedby="defaultFormControlHelp">
+                                    <option value="most-commented">En çok yorum alanlar</option>
+                                    <option value="most-viewed">En çok görüntülenenler</option>
+                                    <option value="last-added">Yeni eklenenler</option>
+                                </select>
+                             
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="SidebarBottomArticleSetting" class="form-label">Yan menüde altta ne görünsün :</label>
+                                <select asp-for="SidebarBottomArticleSetting"
+                                        type="text"
+                                        class="form-control mb-3"
+                                        id="defaultFormControlInput"
+                                        aria-describedby="defaultFormControlHelp">
+                                    <option value="most-commented">En çok yorum alanlar</option>
+                                    <option value="most-viewed">En çok görüntülenenler</option>
+                                    <option value="last-added">Yeni eklenenler</option>
+                                </select>
+                               
+                            </div>
+
+                            <div class="form-group">
+
+                                <label asp-for="SiteTitle" class="form-label">Site başlığı :</label>
+                                <input asp-for="SiteTitle"
+                                       type="text"
+                                       class="form-control mb-3"
+                                       id="defaultFormControlInput"
+                                       placeholder="Site başlığı : "
+                                       aria-describedby="defaultFormControlHelp" />
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label asp-for="FacebookUrl" class="form-label">Facebook URL :</label>
+                                <input asp-for="FacebookUrl"
+                                       type="text"
+                                       class="form-control mb-3"
+                                       id="defaultFormControlInput"
+                                       placeholder="Facebook profil url : "
+                                       aria-describedby="defaultFormControlHelp" />
+                             
+                            </div>
+                            <div class="form-group">
+
+                                <label asp-for="InstagramUrl" class="form-label">Instagram URL :</label>
+                                <input asp-for="InstagramUrl"
+                                       type="text"
+                                       class="form-control mb-3"
+                                       id="defaultFormControlInput"
+                                       placeholder="Instagram profil url : "
+                                       aria-describedby="defaultFormControlHelp" />
+                                
+                            </div>
+                            <div class="form-group">
+
+                                <label asp-for="Twitterurl" class="form-label">Twitter URL :</label>
+                                <input asp-for="Twitterurl"
+                                       type="text"
+                                       class="form-control mb-3"
+                                       id="defaultFormControlInput"
+                                       placeholder="Twitter profil url : "
+                                       aria-describedby="defaultFormControlHelp" />
+                                
+                            </div>
+                            <div class="form-group">
+
+                                <label asp-for="Youtubeurl" class="form-label">Youtube URL :</label>
+                                <input asp-for="Youtubeurl"
+                                       type="text"
+                                       class="form-control mb-3"
+                                       id="defaultFormControlInput"
+                                       placeholder="Youtube profil url : "
+                                       aria-describedby="defaultFormControlHelp" />
+                           
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="FooterDescription" class="form-label">Footerdaki Açıklama :</label>
+                                <input asp-for="FooterDescription"
+                                       type="text"
+                                       class="form-control mb-3"
+                                       id="defaultFormControlInput"
+                                       placeholder="Bir açıklama girin :"
+                                       aria-describedby="defaultFormControlHelp" />
+                           
+                            </div>
+
+                          
+
+                            
+
+                            <div class="form-group">
+                                
+                                @if (Model.IsAIEnabled)
+                                {
+                                    <input asp-for="IsAIEnabled" type="checkbox" class="form-check-input mt-0" checked/>
+                                }else {
+                                    <input asp-for="IsAIEnabled" type="checkbox" class="form-check-input mt-0" />
+                                }
+                                
+                                <label asp-for="IsAIEnabled" class="form-label">Makaleler için tavsiye edilenleri bulan AI Servisi makale ekleme sırasında aktive edilsin mi ? </label>
+ 
+                            </div>
+
+                            <div class="form-group">
+                            
+                                <label asp-for="LogoFile" class="form-label">Logo için resim seçiniz : </label>
+                                <input asp-for="LogoFile"
+                                       type="file"
+                                       accept="image/*"
+                                       class="form-control mb-3"
+                                       id="defaultFormControlInput"
+                                       placeholder="John Doe"
+                                       aria-describedby="defaultFormControlHelp" />
+                               
+                            </div>
+
+                            <div class="form-group">
+                             
+                                <label asp-for="FooterLogoFile" class="form-label">Footer logosu için resim seçiniz : </label>
+                                <input asp-for="FooterLogoFile"
+                                       type="file"
+                                       accept="image/*"
+                                       class="form-control mb-3"
+                                       id="defaultFormControlInput"
+                                       placeholder="John Doe"
+                                       aria-describedby="defaultFormControlHelp" />
+                           
+                            </div>
+
+                            <div class="form-group">
+
+                                <label asp-for="AdminPanelLogoFile" class="form-label">Admin panel logosu için resim seçiniz : </label>
+                                <input asp-for="AdminPanelLogoFile"
+                                       type="file"
+                                       accept="image/*"
+                                       class="form-control mb-3"
+                                       id="defaultFormControlInput"
+                                       placeholder="John Doe"
+                                       aria-describedby="defaultFormControlHelp" />
+
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary btn-block">Ayarları Kaydet</button>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- / Content -->
+
+
+
+    <div class="content-backdrop fade"></div>
+</div>
+<!-- Content wrapper -->

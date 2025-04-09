@@ -1,0 +1,59 @@
+﻿@model List<ArticleIndexViewModel>
+
+<section class="section first-section">
+    <div class="container-fluid">
+        <div class="masonry-blog clearfix">
+
+            <div class="first-slot">
+                <div class="masonry-box post-media">
+                    <img style="width:100%;max-height:500px;" src="~/images/@Model[0].Image.FileName" alt="" class="img-fluid">
+                    <div class="shadoweffect">
+                        <div class="shadow-desc">
+                            <div class="blog-meta">
+                                <span class="bg-orange"><a title="">@Model[0].Category.Name</a></span>
+                                <h4><a  asp-controller="Home" asp-action="Detail" asp-route-id="@Model[0].Id" title="">@Model[0].Title</a></h4>
+                                <small><a  title="">@Model[0].CreatedDate</a></small>
+                                <small><a title="">@Model[0].CreatedBy</a></small>
+                            </div><!-- end meta -->
+                        </div><!-- end shadow-desc -->
+                    </div><!-- end shadow -->
+                </div><!-- end post-media -->
+            </div><!-- end first-side -->
+
+            <div class="second-slot">
+                <div class="masonry-box post-media">
+                    <img style="width:100%;height:500px;" src="~/images/@Model[1].Image.FileName" alt="" class="img-fluid">
+                    <div class="shadoweffect">
+                        <div class="shadow-desc">
+                            <div class="blog-meta">
+                                <span class="bg-orange"><a title="">@Model[1].Category.Name</a></span>
+                                <h4><a asp-controller="Home" asp-action="Detail" asp-route-id="@Model[1].Id" title="">@Model[1].Title</a></h4>
+                                <small><a title="">@Model[1].CreatedDate</a></small>
+                                <small><a title="">@Model[1].CreatedBy</a></small>
+                            </div><!-- end meta -->
+                        </div><!-- end shadow-desc -->
+                    </div><!-- end shadow -->
+                </div><!-- end post-media -->
+            </div><!-- end second-side -->
+
+            <div class="last-slot">
+                <div class="masonry-box post-media">
+                    <img style="width:100%;height:500px;" src="~/images/@Model[2].Image.FileName" alt="" class="img-fluid">
+                    <div class="shadoweffect">
+                        <div class="shadow-desc">
+                            <div class="blog-meta">
+                                <span class="bg-orange"><a title="">@Model[2].Category.Name</a></span>
+                                <h4><a asp-controller="Home" asp-action="Detail" asp-route-id="@Model[2].Id" title="">@Model[2].Title</a></h4>
+                                <small><a title="">@Model[2].CreatedDate</a></small>
+                                <small><a title="">@Model[2].CreatedBy</a></small>
+                            </div><!-- end meta -->
+                        </div><!-- end shadow-desc -->
+                    </div><!-- end shadow -->
+                </div><!-- end post-media -->
+            </div><!-- end last-side -->
+
+
+        </div><!-- end masonry -->
+    </div>
+</section>
+

@@ -1,0 +1,46 @@
+﻿@model List<ArticleViewModel>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Makale Yönetimi /</span> Makaleler</h4>
+
+    <!-- Basic Bootstrap Table -->
+    <div class="card">
+        <h5 class="card-header">Makaleler</h5>
+
+
+        <div class="table-responsive text-nowrap m-5">
+           
+            <br />
+            <table class="table table-bordered" id="articlesTable" width="100%" callspacing="0">
+                <thead>
+                    <tr>
+                        <th>Başlık</th>
+                        <th>Kategori</th>
+                        <th>Oluşturulma tarihi</th>
+                        <th>Oluşturan Kişi</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    @foreach (var a in Model)
+                    {
+                          <tr name="@a.Id">
+                              <td>@a.Title</td>
+                              <td>@a.Category.Name</td>
+                              <td>@a.CreatedDate.ToShortDateString()</td>
+                              <td>@a.CreatedBy</td>
+                              <td><a class="btn btn-warning btn-sm" data-id="@a.Id" asp-area="Admin" asp-controller="Article" asp-action="UndoDelete" asp-route-articleId="@a.Id"><i class="bx bx-undo"></i></a>
+                                <a class="btn btn-danger btn-sm" data-id="@a.Id" asp-area="Admin" asp-controller="Article" asp-action="ForceDelete" asp-route-articleId="@a.Id"><i class="bx bx-trash"></i></a>
+
+                              </td>
+                          </tr>
+                    } 
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--/ Basic Bootstrap Table -->
+    </div>
+
+@section Scripts {
+            <script src="~/js/articleIndex.js" type="application/ecmascript"></script>
+}
