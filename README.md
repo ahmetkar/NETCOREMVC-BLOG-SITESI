@@ -4,7 +4,7 @@
 Bu proje .Net core mvc ,jquery,html,css,EF Core,MSSQL kullanılarak yazılmıştır.
 Projeyi yazılırken haber veya blog siteleri için kullanılması amaçlanmış ve backende odaklanılmıştır.
 
-Monolitik mimari ve çeşitli design patternlar kullanarak ölçeklenebilir,yönetilebilir kodlar yazılmıştır.
+Çok katmanlı mimari ve çeşitli design patternlar kullanarak ölçeklenebilir,yönetilebilir kodlar yazılmıştır.
 
 
 
@@ -22,7 +22,7 @@ Monolitik mimari ve çeşitli design patternlar kullanarak ölçeklenebilir,yön
 
 ## Kullanılan Mimari ve Design Pattern'lar
 
-- Monolitik Mimari
+- Çok Katmanlı Mimari
 - Unit Of Work Design Pattern
 - Dependency Injection
 - Generic Repository Design Pattern
