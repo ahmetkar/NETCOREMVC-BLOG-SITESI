@@ -2,8 +2,6 @@
 # .NET CORE MVC BLOG SİTESİ
 
 Bu proje .Net core mvc ,next.js,tailwind,html,css,EF Core,MSSQL kullanılarak yazılmıştır.
-Projeyi yazılırken haber veya blog siteleri için kullanılması amaçlanmış ve backende odaklanılmıştır.
-
 Çok katmanlı mimari ve çeşitli design patternlar kullanarak ölçeklenebilir,yönetilebilir kodlar yazılmıştır.
 
 
