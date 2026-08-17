@@ -45,35 +45,14 @@ Bu proje .Net core mvc ,next.js,tailwind,html,css,EF Core,MSSQL kullanılarak ya
 
 ## Kullanılan temaların linkleri
 
-Admin paneli için : [sneat](https://themewagon.com/themes/free-responsive-bootstrap-5-html5-admin-template-sneat/)
-
-Site için : [blog-theme](https://www.free-css.com/free-css-templates/page244/tech-blog)
 
 
 ## Siteden Ekran Görüntüleri
 
-![Site Resim 1](blogprojeresimler/chrome_1I9wIf3SUA.png)
-
-![Site Resim 2](blogprojeresimler/chrome_AJbov44Dnp.png)
-
-![Site Resim 3](blogprojeresimler/chrome_IOHjRFOFm0.png)
-
-![Site Resim 4](blogprojeresimler/chrome_dDnF5swu2g.png)
-
-![Site Resim 5](blogprojeresimler/chrome_jt8DNC51HP.png)
 
 
 ## Admin Panelinden Ekran Görüntüleri
 
-![Site Resim 1](blogprojeresimler/chrome_4LxUSLBsUZ.png)
-
-![Site Resim 2](blogprojeresimler/chrome_T95UjXUjuJ.png)
-
-![Site Resim 3](blogprojeresimler/chrome_V93lAfva5g.png)
-
-![Site Resim 4](blogprojeresimler/chrome_gOJHZSO7dS.png)
-
-![Site Resim 5](blogprojeresimler/chrome_qgNzJ8X3ce.png)
 
 
 
