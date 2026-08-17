@@ -1,7 +1,7 @@
 
-# .NET CORE MVC BLOG/HABER SİTESİ
+# .NET CORE MVC HABER SİTESİ
 
-Bu proje .Net core mvc ,jquery,html,css,EF Core,MSSQL kullanılarak yazılmıştır.
+Bu proje .Net core mvc,web api ,jquery,html,css,EF Core,MSSQL kullanılarak yazılmıştır.
 Projeyi yazılırken haber veya blog siteleri için kullanılması amaçlanmış ve backende odaklanılmıştır.
 
 Çok katmanlı mimari ve çeşitli design patternlar kullanarak ölçeklenebilir,yönetilebilir kodlar yazılmıştır.
@@ -16,7 +16,7 @@ Projeyi yazılırken haber veya blog siteleri için kullanılması amaçlanmış
 - Entity Framework CORE
 - MSSQL
 - Fluent Validation
-- JQUERY
+- Jquery
 - HTML-CSS
 - BOOTSTRAP 5
 
