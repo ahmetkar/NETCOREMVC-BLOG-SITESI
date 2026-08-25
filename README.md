@@ -4,6 +4,9 @@
 Bu proje .Net core mvc ,next.js,tailwind,html,css,EF Core,MSSQL kullanılarak yazılmıştır.
 Çok katmanlı mimari ve çeşitli design patternlar kullanarak ölçeklenebilir,yönetilebilir kodlar yazılmıştır.
 
+Canlı linki 2 gün içerisinde aktif olacaktır. Şu anda bazı hataların çözümü ve yenilikler yapılmaktadır.
+
+Canlı link : https://blog.ahmetkar.com
 
 
 ## Kullanılan Teknolojiler
@@ -31,27 +34,48 @@ Bu proje .Net core mvc ,next.js,tailwind,html,css,EF Core,MSSQL kullanılarak ya
 - Admin paneli ile makale,yorum,kategori yönetimi
 - Admin paneli ile resimlerin yönetimi
 - Admin paneli ile kullanıcıların yönetimi
-- Editörlerin admin paneli ile blog/haber ekleyebilmesi
-- Admin paneli aracılığıyla kullanıcı tarafından görüntülenen blogların nereden geleceğinin berirlenmesi (Örn. çok görüntülenen,çok yorum alan, son eklenen vs.)
+- Admin,editör,kullanıcı rolleriyle farklı yetkilerle sitenin yönetimi
+- Admin paneli aracılığıyla anasayfa,hakkımızda,iletişim sayfalarının dinamik düzenlenmesi
 - Her eklenen makalenin önceki makaleler ile makine öğrenmesi aracılığıyla benzerliğinin hesaplanıp makale görüntüleme sayfasında benzer makalelerin tavsiye edilmesi
-- Yorum yapılması,iletişim,arama 
-- Sabit sayfaların içeriklerinin(iletişim,hakkımızda vs.) admin panelinden düzenlenebilmesi
-- Admin panelinden silinenlerin tamamen silinmeyip çöp kutusuna gönderilmesi ve istenirse tamamen silinmesi
-
-
-
-
-
-
-## Kullanılan temaların linkleri
+- Yorum yapılması
+- Arama özelliği
+- Admin panelinden silinen makale,medya,kategori gibi verilerin silinmeyip çöp kutusuna gönderilmesi ve istenirse tamamen silinmesi
+- Tailwind ve nextjs kullanan responsive ve modern tasarım
+- E-mail abonelik sistemi
+- Memcache ile caching
+- Google storage ile resimlerin depolanması
 
 
 
 ## Siteden Ekran Görüntüleri
 
+![Site Resim 1](ekrangoruntuleri/Screenshot%202026-08-19%20010607.png)
+
+![Site Resim 2](ekrangoruntuleri/Screenshot%202026-08-19%20010620.png)
+
+![Site Resim 3](ekrangoruntuleri/Screenshot%202026-08-19%20010644.png)
+
+![Site Resim 4](ekrangoruntuleri/Screenshot%202026-08-19%20010706.png)
+
+![Site Resim 5](ekrangoruntuleri/Screenshot%202026-08-19%20010738.png)
+
+![Site Resim 6](ekrangoruntuleri/Screenshot%202026-08-19%20010752.png)
+
+![Site Resim 7](ekrangoruntuleri/Screenshot%202026-08-19%20010810.png)
+
 
 
 ## Admin Panelinden Ekran Görüntüleri
+
+![Site Resim 1](ekrangoruntuleri/Screenshot%202026-08-19%20010836.png)
+
+![Site Resim 2](ekrangoruntuleri/Screenshot%202026-08-19%20010852.png)
+
+![Site Resim 3](ekrangoruntuleri/Screenshot%202026-08-19%20010906.png)
+
+![Site Resim 4](ekrangoruntuleri/Screenshot%202026-08-19%20010924.png)
+
+
 
 
 

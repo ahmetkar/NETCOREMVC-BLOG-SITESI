@@ -1,0 +1,57 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Outfit', system-ui, sans-serif;
+  
+  --color-brand-bg: #FAFAFA;
+  --color-brand-surface: #FFFFFF;
+  --color-brand-text: #121212;
+  --color-brand-muted: #555555;
+  --color-brand-border: #E5E7EB;
+  
+  --color-brand-primary: #4F46E5; /* Electric Blue */
+  --color-brand-secondary: #FF7E67; /* Coral */
+  
+  --color-brand-dark-bg: #121212;
+  --color-brand-dark-surface: #1E1E1E;
+  --color-brand-dark-text: #F9FAFB;
+  --color-brand-dark-muted: #9CA3AF;
+  --color-brand-dark-border: #374151;
+}
+
+@layer base {
+  body {
+    @apply bg-brand-bg text-brand-text font-sans antialiased selection:bg-brand-primary selection:text-white;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.05)];
+  }
+  
+  .glass-dark {
+    @apply bg-black/50 backdrop-blur-lg border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.2)];
+  }
+
+  .neumorphic {
+    @apply bg-brand-bg rounded-xl shadow-[5px_5px_10px_#e5e5e5,-5px_-5px_10px_#ffffff] border border-transparent;
+    transition: all 0.3s ease;
+  }
+  
+  .neumorphic:hover {
+    @apply shadow-[inset_5px_5px_10px_#e5e5e5,inset_-5px_-5px_10px_#ffffff];
+  }
+
+  .aurora-bg {
+    background: radial-gradient(circle at 15% 50%, rgba(79, 70, 229, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(255, 126, 103, 0.15), transparent 25%);
+    background-size: cover;
+  }
+  
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-primary to-brand-secondary;
+  }
+}

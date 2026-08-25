@@ -8,7 +8,7 @@ namespace Blog.Entity.DTOs.Article
 {
     public class ArticleListViewModel
     {
-       public IList<Blog.Entity.Entities.Article> Articles { get; set; }
+       public IList<ArticleViewModel> Articles { get; set; }
        public Guid? CategoryId { get; set; }
        public virtual int currentPage { get; set; } = 1;
        public virtual int pageSize { get; set; } = 3;

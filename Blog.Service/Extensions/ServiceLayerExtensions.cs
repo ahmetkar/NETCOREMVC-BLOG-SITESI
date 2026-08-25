@@ -1,4 +1,4 @@
-﻿using Blog.Data.Context;
+using Blog.Data.Context;
 using Blog.Data.Repositories.Abstractions;
 using Blog.Data.Repositories.Concretes;
 using Blog.Data.UnitOfWorks;
@@ -38,7 +38,8 @@ namespace Blog.Service.Extensions
             services.AddScoped<ISettingService, SettingService>();
             services.AddScoped<IMessagesService, MessagesService>();
             services.AddScoped<IImageService, ImageService>();
-
+            services.AddScoped<ISubscriberService, SubscriberService>();
+            services.AddScoped<ICachingService, CachingService>();
             services.AddControllersWithViews().AddFluentValidation(opt => {
                 opt.RegisterValidatorsFromAssemblyContaining<ArticleValidator>();
                 opt.DisableDataAnnotationsValidation = true;

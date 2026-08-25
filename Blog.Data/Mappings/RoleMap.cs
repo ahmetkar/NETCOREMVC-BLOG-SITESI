@@ -1,4 +1,4 @@
-﻿using Blog.Entity.Entities;
+using Blog.Entity.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -47,8 +47,8 @@ namespace Blog.Data.Mappings
             };
             TRole admin = new TRole{
                 Id = Guid.Parse("{dddfbe14-bb8f-4c4f-af4e-c1be34ea9b88}"),
-                Name = "Admin",
-                NormalizedName = "ADMIN",
+                Name = "Editor",
+                NormalizedName = "EDITOR",
             };
 
             TRole user = new TRole

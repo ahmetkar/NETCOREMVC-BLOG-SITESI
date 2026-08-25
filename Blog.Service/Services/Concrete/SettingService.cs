@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Blog.Data.UnitOfWorks;
 using Blog.Entity.DTOs.Article;
 using Blog.Entity.DTOs.Page;
@@ -44,7 +44,7 @@ namespace Blog.Service.Services.Concrete
             var userEmail = user.GetLoggedInEmail();
 
             var settings = await unitOfWorkk.GetRepository<SiteSettings>().GetAllWithLimitAsync(1, x => !x.IsDeleted,
-                true, x => x.CreatedDate, x => x.LogoImage, x => x.FooterLogo);
+                true, x => x.CreatedDate, x => x.LogoImage, x => x.FooterLogo, x => x.AdminPanelLogo);
             
             var setting = settings[0];
             if (setting != null) { 
@@ -69,17 +69,44 @@ namespace Blog.Service.Services.Concrete
 
                 }
 
-                setting.IsAIEnabled = updateSetting.IsAIEnabled;
-                setting.Youtubeurl = updateSetting.Youtubeurl;
-                setting.FacebookUrl = updateSetting.FacebookUrl;
-                setting.Twitterurl = updateSetting.Twitterurl;
-                setting.InstagramUrl = updateSetting.InstagramUrl;
-                setting.SidebarBottomArticleSetting = updateSetting.SidebarBottomArticleSetting;
-                setting.TopArticleSetting = updateSetting.TopArticleSetting;
-                setting.SidebarTopArticleSetting = updateSetting.SidebarTopArticleSetting;   
+                setting.Category1Id = updateSetting.Category1Id;
+                setting.Category2Id = updateSetting.Category2Id;
+                setting.Category3Id = updateSetting.Category3Id;
+                setting.Category4Id = updateSetting.Category4Id;
+                setting.Category5Id = updateSetting.Category5Id;
+
+                setting.HeroArticleId = updateSetting.HeroArticleId;
+                setting.FeaturedArticle1Id = updateSetting.FeaturedArticle1Id;
+                setting.FeaturedArticle2Id = updateSetting.FeaturedArticle2Id;
+                   
                 setting.ModifiedBy = userEmail;
                 setting.ModifiedDate = DateTime.Now;
                 setting.SiteTitle = updateSetting.SiteTitle;
+                
+                // Hakkımızda mapping
+                setting.AboutUsTitle = updateSetting.AboutUsTitle;
+                setting.AboutUsDescription = updateSetting.AboutUsDescription;
+                setting.AboutUsSectionTitle = updateSetting.AboutUsSectionTitle;
+                setting.AboutUsSectionDescription = updateSetting.AboutUsSectionDescription;
+                setting.AboutUsCard1Title = updateSetting.AboutUsCard1Title;
+                setting.AboutUsCard1Description = updateSetting.AboutUsCard1Description;
+                setting.AboutUsCard2Title = updateSetting.AboutUsCard2Title;
+                setting.AboutUsCard2Description = updateSetting.AboutUsCard2Description;
+                setting.AboutUsCard3Title = updateSetting.AboutUsCard3Title;
+                setting.AboutUsCard3Description = updateSetting.AboutUsCard3Description;
+
+                // İletişim mapping
+                setting.ContactEmail = updateSetting.ContactEmail;
+                setting.ContactTitle = updateSetting.ContactTitle;
+                setting.ContactDescription = updateSetting.ContactDescription;
+            
+                // Diğer bilgiler
+                setting.FacebookUrl = updateSetting.FacebookUrl;
+                setting.InstagramUrl = updateSetting.InstagramUrl;
+                setting.Twitterurl = updateSetting.Twitterurl;
+                setting.Youtubeurl = updateSetting.Youtubeurl;
+                setting.FooterDescription = updateSetting.FooterDescription;
+                setting.IsAIEnabled = updateSetting.IsAIEnabled;
             
                     await unitOfWorkk.GetRepository<SiteSettings>().UpdateAsync(setting);
                     await unitOfWorkk.SaveAsync();
@@ -93,9 +120,8 @@ namespace Blog.Service.Services.Concrete
         {
            
             var settings = await unitOfWorkk.GetRepository<SiteSettings>().GetAllWithLimitAsync(1, x =>!x.IsDeleted,
-                    true, x => x.CreatedDate, x => x.LogoImage, x => x.FooterLogo);
-            
-            
+                    true, x => x.CreatedDate, x => x.LogoImage, x => x.FooterLogo, x => x.AdminPanelLogo);
+
             if (settings.Count > 0)
             {
                 return settings[0];

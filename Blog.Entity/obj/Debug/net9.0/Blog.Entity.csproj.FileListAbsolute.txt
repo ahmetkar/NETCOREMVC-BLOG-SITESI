@@ -1,0 +1,16 @@
+C:\netprojects\haberproje\habersitesi\Blog.Entity\bin\Debug\net9.0\Blog.Entity.deps.json
+C:\netprojects\haberproje\habersitesi\Blog.Entity\bin\Debug\net9.0\Blog.Entity.dll
+C:\netprojects\haberproje\habersitesi\Blog.Entity\bin\Debug\net9.0\Blog.Entity.pdb
+C:\netprojects\haberproje\habersitesi\Blog.Entity\bin\Debug\net9.0\Blog.Core.dll
+C:\netprojects\haberproje\habersitesi\Blog.Entity\bin\Debug\net9.0\Blog.Core.pdb
+C:\netprojects\haberproje\habersitesi\Blog.Entity\obj\Debug\net9.0\Blog.Entity.csproj.AssemblyReference.cache
+C:\netprojects\haberproje\habersitesi\Blog.Entity\obj\Debug\net9.0\Blog.Entity.GeneratedMSBuildEditorConfig.editorconfig
+C:\netprojects\haberproje\habersitesi\Blog.Entity\obj\Debug\net9.0\Blog.Entity.AssemblyInfoInputs.cache
+C:\netprojects\haberproje\habersitesi\Blog.Entity\obj\Debug\net9.0\Blog.Entity.AssemblyInfo.cs
+C:\netprojects\haberproje\habersitesi\Blog.Entity\obj\Debug\net9.0\Blog.Entity.csproj.CoreCompileInputs.cache
+C:\netprojects\haberproje\habersitesi\Blog.Entity\obj\Debug\net9.0\Blog.Ent.4E135DA9.Up2Date
+C:\netprojects\haberproje\habersitesi\Blog.Entity\obj\Debug\net9.0\Blog.Entity.dll
+C:\netprojects\haberproje\habersitesi\Blog.Entity\obj\Debug\net9.0\refint\Blog.Entity.dll
+C:\netprojects\haberproje\habersitesi\Blog.Entity\obj\Debug\net9.0\Blog.Entity.pdb
+C:\netprojects\haberproje\habersitesi\Blog.Entity\obj\Debug\net9.0\ref\Blog.Entity.dll
+C:\netprojects\haberproje\habersitesi\Blog.Entity\obj\Debug\net9.0\Blog.Entity.sourcelink.json

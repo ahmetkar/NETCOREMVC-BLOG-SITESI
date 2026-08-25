@@ -13,7 +13,5 @@ namespace Blog.Entity.DTOs.Images
         public string FileType { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
-        public ICollection<Blog.Entity.Entities.Article> Articles { get; set; }
-        public ICollection<Blog.Entity.Entities.TUser> Users { get; set; }
     }
 }

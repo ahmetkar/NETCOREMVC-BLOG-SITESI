@@ -1,4 +1,4 @@
-﻿using Blog.Entity.DTOs.Category;
+using Blog.Entity.DTOs.Category;
 using Blog.Entity.Entities;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -18,6 +18,7 @@ namespace Blog.Entity.DTOs.Article
         public Guid CategoryId { get; set; }
         public Image Image { get; set; }
         public IFormFile? imageFile { get; set; }
+        public Guid? SelectedImageId { get; set; }
         public IList<CategoryViewModel> Categories { get; set; }
        
     }

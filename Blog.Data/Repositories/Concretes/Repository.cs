@@ -1,4 +1,4 @@
-﻿using Blog.Core.Entities;
+using Blog.Core.Entities;
 using Blog.Data.Context;
 using Blog.Data.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;
@@ -112,7 +112,7 @@ namespace Blog.Data.Repositories.Concretes
                 }
             }
 
-            return await query.SingleAsync();
+            return await query.SingleOrDefaultAsync();
 
 
         }
@@ -132,6 +132,11 @@ namespace Blog.Data.Repositories.Concretes
             return entity;
         }
 
+
+        public IQueryable<T> GetQueryable()
+{
+            return this.dbContext.Set<T>();
+        }
 
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
         {

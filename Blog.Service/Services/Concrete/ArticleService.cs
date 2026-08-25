@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Blog.Data.UnitOfWorks;
 using Blog.Entity.DTOs.Article;
 using Blog.Entity.DTOs.Category;
@@ -10,6 +10,7 @@ using Blog.Service.Extensions;
 using Blog.Service.Helpers.Images;
 using Blog.Service.Services.Abstractions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -31,10 +32,12 @@ namespace Blog.Service.Services.Concrete
         private readonly IImageHelper imageHelper;
         private readonly IArticleAIService articleAIService;
         private readonly IImageService imageService;
-        private readonly ClaimsPrincipal user;
+        private ClaimsPrincipal user => httpContextAccessor.HttpContext?.User;
+
+        private readonly ICachingService cachingService;
 
         public ArticleService(IUnitOfWorkk unitOfWorkk, IMapper mapper, IHttpContextAccessor httpContextAccessor, IImageHelper imageHelper,
-            IArticleAIService articleAIService,IImageService imageService)
+            IArticleAIService articleAIService,IImageService imageService,ICachingService cachingService)
         {
 
             _unitOfWorkk = unitOfWorkk;
@@ -43,21 +46,21 @@ namespace Blog.Service.Services.Concrete
             this.imageHelper = imageHelper;
             this.articleAIService = articleAIService;
             this.imageService = imageService;
-            user = httpContextAccessor.HttpContext.User;
+            this.cachingService = cachingService;
         }
-
-
-     
-
 
 
         public async Task CreateArticleAsync(ArticleCreateModel articleCreateModel, bool isAIActive = true)
         {
             var userId = user.GetLoggedInUserId();
             var userEmail = user.GetLoggedInEmail();
-
-            Guid imageId = await imageService.ImageUpload(articleCreateModel.Title, articleCreateModel.imageFile, ImageType.Article,
-                userEmail);
+            
+            var slug = Blog.Service.Helpers.SlugHelper.GenerateSlug(articleCreateModel.Title);
+            Guid? imageId = null;
+            if (articleCreateModel.imageFile != null)
+            {
+                imageId = await imageService.ImageUpload(slug, articleCreateModel.imageFile, ImageType.Article, userEmail);
+            }
 
             var article = new Article
             {
@@ -67,28 +70,75 @@ namespace Blog.Service.Services.Concrete
                 CategoryID = Guid.Parse(articleCreateModel.CategoryId),
                 UserId = userId,
                 CreatedBy = userEmail,
-                ImageId = imageId
+                ImageId = imageId,
+                Slug = slug
             };
             await _unitOfWorkk.GetRepository<Article>().AddAsync(article);
             await _unitOfWorkk.SaveAsync();
 
             if (isAIActive) await articleAIService.CreateCosinesForArticleAsync(article.Id, article.CreatedDate);
 
+            await cachingService.RemoveAllKeysFromCacheList("tag:articles");
+
         }
+
+        public async Task<ArticleViewModel> GetLastArticle()
+        {
+
+          var articleDb = await _unitOfWorkk
+                .GetRepository<Article>().GetQueryable().OrderByDescending(x=>x.CreatedDate).FirstOrDefaultAsync();
+
+                var res = mapper.Map<ArticleViewModel>(articleDb);
+
+
+                return res;
+            
+        }
+
 
         public async Task<List<ArticleViewModel>> GetAllArticlesWithCategoryAsync()
         {
-            var articles = await _unitOfWorkk.GetRepository<Article>().GetAllAsync(x => x.IsDeleted == false, x => x.Category);
-            var map = mapper.Map<List<ArticleViewModel>>(articles);
-            return map;
+         var articleCache = await cachingService.GetCached<List<ArticleViewModel>>("allarticlesbycategory");
+
+            if (articleCache != null)
+            {
+                return articleCache;
+            }else {
+                var articles = await _unitOfWorkk.GetRepository<Article>()
+                    .GetAllAsync(x => !x.IsDeleted, x => x.Category);
+                
+                var map = mapper.Map<List<ArticleViewModel>>(
+                    articles.OrderByDescending(x => x.CreatedDate).ToList());
+
+                await cachingService.SetCached<List<ArticleViewModel>>("allarticlesbycategory",map,300);
+                await cachingService.AddKeyToCacheList("allarticlesbycategory","tag:articles",300);
+
+                return map;
+            }
         }
+
+
 
 
         public async Task<List<ArticleIndexViewModel>> GetAllArticlesWithCategoryForIndexAsync()
         {
-            var articles = await _unitOfWorkk.GetRepository<Article>().GetAllAsync(x => x.IsDeleted == false, x => x.Category, x => x.Image, x => x.User);
-            var map = mapper.Map<List<ArticleIndexViewModel>>(articles);
-            return map;
+            
+         var articleCache = await cachingService.GetCached<List<ArticleIndexViewModel>>("allarticlesbycategoryforindex");
+
+            if (articleCache != null)
+            {
+                return articleCache;
+            }else {
+
+                var articles = await _unitOfWorkk.GetRepository<Article>().GetAllAsync(x => x.IsDeleted == false, x => x.Category, x => x.Image, x => x.User);
+                var map = mapper.Map<List<ArticleIndexViewModel>>(articles);
+
+                await cachingService.SetCached<List<ArticleIndexViewModel>>("allarticlesbycategoryforindex",map,300);
+                await cachingService.AddKeyToCacheList("allarticlesbycategoryforindex","tag:articles",300);
+                return map;
+            }
+
+            
         }
 
        
@@ -96,27 +146,57 @@ namespace Blog.Service.Services.Concrete
 
         public async Task<List<ArticleIndexViewModel>> GetLastFiveArticlesAsync()
         {
-            var articles = await _unitOfWorkk.GetRepository<Article>().GetAllWithLimitAsync(5, x => x.IsDeleted == false, true, x => x.CreatedDate, x => x.Category, x => x.Image);
-            var map = mapper.Map<List<ArticleIndexViewModel>>(articles);
-            return map;
+            var articleCache = await cachingService.GetCached<List<ArticleIndexViewModel>>("lastfivearticles");
+
+            if (articleCache != null)
+            {
+                return articleCache;
+            }else {
+                var articles = await _unitOfWorkk.GetRepository<Article>().GetAllWithLimitAsync(5, x => x.IsDeleted == false, true, x => x.CreatedDate, x => x.Category, x => x.Image);
+                var map = mapper.Map<List<ArticleIndexViewModel>>(articles);
+                await cachingService.SetCached<List<ArticleIndexViewModel>>("lastfivearticles",map,300);
+                await cachingService.AddKeyToCacheList("lastfivearticles","tag:articles",300);
+                return map;
+            }
+            
+        
         }
 
 
         public async Task<List<ArticleIndexViewModel>> GetMostCommentedArticlesAsync()
         {
-            var articles = await _unitOfWorkk.GetRepository<Article>().GetAllWithLimitAsync(5, x => !x.IsDeleted, true, x => x.CommentCount, x => x.Image, x => x.Category, x => x.User);
+            var articleCache = await cachingService.GetCached<List<ArticleIndexViewModel>>("mostcommentedarticles");
 
-            var map = mapper.Map<List<ArticleIndexViewModel>>(articles);
-            return map;
+            if (articleCache != null)
+            {
+                return articleCache;
+            }else {
+                 var articles = await _unitOfWorkk.GetRepository<Article>().GetAllWithLimitAsync(5, x => !x.IsDeleted, true, x => x.CommentCount, x => x.Image, x => x.Category, x => x.User);
+
+                var map = mapper.Map<List<ArticleIndexViewModel>>(articles);
+                await cachingService.SetCached<List<ArticleIndexViewModel>>("mostcommentedarticles",map,300);
+                await cachingService.AddKeyToCacheList("mostcommentedarticles","tag:articles",300);
+                return map;
+            }
+           
         }
 
 
         public async Task<List<ArticleIndexViewModel>> GetMostVisitedArticlesAsync()
         {
-            var articles = await _unitOfWorkk.GetRepository<Article>().GetAllAsync(x => x.IsDeleted == false, x => x.Category, x => x.Image, x => x.User);
-            articles = articles.OrderByDescending(x => x.ViewCount).Take(5).ToList();
-            var map = mapper.Map<List<ArticleIndexViewModel>>(articles);
-            return map;
+            var articleCache = await cachingService.GetCached<List<ArticleIndexViewModel>>("mostvisitedarticles");
+
+            if (articleCache != null)
+            {
+                return articleCache;
+            }else {
+                var articles = await _unitOfWorkk.GetRepository<Article>().GetAllAsync(x => x.IsDeleted == false, x => x.Category, x => x.Image, x => x.User);
+                articles = articles.OrderByDescending(x => x.ViewCount).Take(5).ToList();
+                var map = mapper.Map<List<ArticleIndexViewModel>>(articles);
+                await cachingService.SetCached<List<ArticleIndexViewModel>>("mostvisitedarticles",map,300);
+                await cachingService.AddKeyToCacheList("mostvisitedarticles","tag:articles",300);
+                return map;
+            }
         }
 
 
@@ -124,6 +204,12 @@ namespace Blog.Service.Services.Concrete
 
         public async Task<List<ArticleViewModel>> GetMayLikeArticlesAsync(Guid articleId)
         {
+            var articleCache = await cachingService.GetCached<List<ArticleViewModel>>("maylikearticles");
+
+            if (articleCache != null)
+            {
+                return articleCache;
+            }else {
             var list = new List<ArticleViewModel> { };
 
             var cosines = await _unitOfWorkk.GetRepository<ArticleSimilarity>().GetAllWithLimitAsync(2, x => x.BaseArticle.Id == articleId, true, x => x.Similarity, x => x.BaseArticle, x => x.TargetArticle);
@@ -136,49 +222,104 @@ namespace Blog.Service.Services.Concrete
                     list.Add(map);
                 }
 
+                await cachingService.SetCached<List<ArticleViewModel>>("maylikearticles",list,300);
+                await cachingService.AddKeyToCacheList("maylikearticles","tag:articles",300);
+
                 return list;
             }
+            }
+           
             return null;
         }
 
         public async Task<(ArticleViewModel, ArticleViewModel)> GetPrevAndNextArticlesAsync(DateTime articleDate)
         {
+            var date = articleDate.ToString().Split(" ")[0].ToString();
+            var prevArticleCache = await cachingService.GetCached<ArticleViewModel>($"prevarticle:{date}");
+            var nextArticleCache = await cachingService.GetCached<ArticleViewModel>($"nextarticle:{date}");
+
+            if (prevArticleCache != null && nextArticleCache!=null)
+            {
+                return (prevArticleCache,nextArticleCache);
+            }else {
             var prevArticle = await _unitOfWorkk.GetRepository<Article>().GetAllWithLimitAsync(1, x => !x.IsDeleted && x.CreatedDate < articleDate, true, x => x.CreatedDate, x => x.Image, x => x.User, x => x.Category);
             var nextArticle = await _unitOfWorkk.GetRepository<Article>().GetAllWithLimitAsync(1, x => !x.IsDeleted && x.CreatedDate > articleDate, false, x => x.CreatedDate, x => x.Image, x => x.User, x => x.Category);
 
             ArticleViewModel prevMap = null;
             ArticleViewModel nextMap = null;
 
-            if (prevArticle.Count > 0)
+            if (prevArticle.Count > 0 && nextArticle.Count > 0)
             {
                 prevMap = mapper.Map<ArticleViewModel>(prevArticle[0]);
-            }
-            if (nextArticle.Count > 0)
-            {
                 nextMap = mapper.Map<ArticleViewModel>(nextArticle[0]);
+
+                await cachingService.SetCached<ArticleViewModel>($"prevarticle:{date}",prevMap,300);
+                await cachingService.SetCached<ArticleViewModel>($"nextarticle:{date}",nextMap,300);
+                await cachingService.AddKeyToCacheList($"prevarticle:{date}","tag:articles",300);
+                await cachingService.AddKeyToCacheList($"nextarticle:{date}","tag:articles",300);
+
+                 return (prevMap, nextMap);
             }
-
-
-            return (prevMap, nextMap);
+            
+            return (null,null);
+           
+            }
         }
 
 
 
         public async Task<ArticleViewModel> GetArticleWithCategoryAndImageAsync(Guid articleId)
         {
-            var article = await _unitOfWorkk.GetRepository<Article>().GetAsync(x => x.IsDeleted == false && x.Id == articleId, x => x.Category, i => i.Image);
-            var map = mapper.Map<ArticleViewModel>(article);
-            return map;
+            var articleCache = await cachingService.GetCached<ArticleViewModel>($"article1:{articleId}");
+
+            if (articleCache != null)
+            {
+                return articleCache;
+            }else {
+                var article = await _unitOfWorkk.GetRepository<Article>().GetAsync(x => x.IsDeleted == false && x.Id == articleId, x => x.Category, i => i.Image);
+                var map = mapper.Map<ArticleViewModel>(article);
+                await cachingService.SetCached<ArticleViewModel>($"article1:{articleId}",map,300);
+                await cachingService.AddKeyToCacheList($"article1:{articleId}","tag:articles",300);
+                return map;
+            }
         }
 
 
 
         public async Task<ArticleViewModel> GetArticleWithCategoryAndImageAndUserAsync(Guid articleId)
         {
+            var articleCache = await cachingService.GetCached<ArticleViewModel>($"article2:{articleId}");
+
+            if (articleCache != null)
+            {
+                return articleCache;
+            }else {
             var article = await _unitOfWorkk.GetRepository<Article>().GetAsync(x => x.IsDeleted == false && x.Id == articleId, x => x.Category, i => i.Image,
                 u => u.User, ui => ui.User.Image, x => x.Comments);
             var map = mapper.Map<ArticleViewModel>(article);
+            await cachingService.SetCached<ArticleViewModel>($"article2:{articleId}",map,300);
+            await cachingService.AddKeyToCacheList($"article2:{articleId}","tag:articles",300);
             return map;
+            }
+        }
+
+        
+
+        public async Task<ArticleViewModel> GetArticleBySlugWithCategoryAndImageAndUserAsync(string slug)
+        {
+           var articleCache = await cachingService.GetCached<ArticleViewModel>($"article3:{slug}");
+
+            if (articleCache != null)
+            {
+                return articleCache;
+            }else {
+            var article = await _unitOfWorkk.GetRepository<Article>().GetAsync(x => x.IsDeleted == false && x.Slug == slug, x => x.Category, i => i.Image,
+                u => u.User, ui => ui.User.Image, x => x.Comments);
+            var map = mapper.Map<ArticleViewModel>(article);
+            await cachingService.SetCached<ArticleViewModel>($"article3:{slug}",map,300);
+            await cachingService.AddKeyToCacheList($"article3:{slug}","tag:articles",300);
+            return map;
+            }
         }
 
 
@@ -202,6 +343,10 @@ namespace Blog.Service.Services.Concrete
                 article.ImageId = imageId;
 
             }
+            else if (articleUpdateModel.SelectedImageId.HasValue)
+            {
+                article.ImageId = articleUpdateModel.SelectedImageId.Value;
+            }
 
             article.Title = articleUpdateModel.Title;
             article.Content = articleUpdateModel.Content;
@@ -210,6 +355,9 @@ namespace Blog.Service.Services.Concrete
             article.ModifiedDate = DateTime.Now;
             await _unitOfWorkk.GetRepository<Article>().UpdateAsync(article);
             await _unitOfWorkk.SaveAsync();
+
+
+            await cachingService.RemoveKeysFromCacheList("tag:articles",[$"article1:{article.Id}",$"article2:{article.Id}",$"article3:{article.Slug}"],300);
 
             return article.Title;
         }
@@ -230,15 +378,63 @@ namespace Blog.Service.Services.Concrete
 
             await _unitOfWorkk.SaveAsync();
 
+            await cachingService.RemoveAllKeysFromCacheList("tag:articles");
+
             return article.Title;
         }
 
         public async Task<string> ForceDeleteArticleAsync(Guid articleId)
         {
             var article = await _unitOfWorkk.GetRepository<Article>().GetAsync(x => x.Id == articleId, x => x.Image);
-            await imageService.ForceDeleteImageAsync(article.Image);
+            
+            // Delete associated comments
+            var comments = await _unitOfWorkk.GetRepository<Comment>().GetAllAsync(x => x.ArticleId == articleId);
+            foreach (var comment in comments)
+            {
+                await _unitOfWorkk.GetRepository<Comment>().DeleteAsync(comment);
+            }
+
+            // Delete associated article visitors
+            var visitors = await _unitOfWorkk.GetRepository<ArticleVisitor>().GetAllAsync(x => x.ArticleId == articleId);
+            foreach (var visitor in visitors)
+            {
+                await _unitOfWorkk.GetRepository<ArticleVisitor>().DeleteAsync(visitor);
+            }
+
+            // Delete associated article similarities
+            var similarities = await _unitOfWorkk.GetRepository<ArticleSimilarity>().GetAllAsync(x => x.BaseArticleId == articleId || x.TargetArticleId == articleId);
+            foreach (var similarity in similarities)
+            {
+                await _unitOfWorkk.GetRepository<ArticleSimilarity>().DeleteAsync(similarity);
+            }
+
+            // Clear SiteSettings if it references this article
+            var siteSettings = await _unitOfWorkk.GetRepository<SiteSettings>().GetAllAsync();
+            foreach (var setting in siteSettings)
+            {
+                if (setting.HeroArticleId == articleId)
+                {
+                    setting.HeroArticleId = null;
+                    await _unitOfWorkk.GetRepository<SiteSettings>().UpdateAsync(setting);
+                }
+            }
+
+            var image = article.Image;
+            
             await _unitOfWorkk.GetRepository<Article>().DeleteAsync(article);
             await _unitOfWorkk.SaveAsync();
+
+            if (image != null)
+            {
+                try {
+                    await imageService.ForceDeleteImageAsync(image);
+                } catch {
+                    // Ignore if image is still referenced by other entities
+                }
+            }
+
+            await cachingService.RemoveAllKeysFromCacheList("tag:articles");
+            
             return article.Title;
         }
 
@@ -267,6 +463,8 @@ namespace Blog.Service.Services.Concrete
 
             await _unitOfWorkk.SaveAsync();
 
+            await cachingService.RemoveAllKeysFromCacheList("tag:articles");
+
             return article.Title;
         }
 
@@ -275,85 +473,121 @@ namespace Blog.Service.Services.Concrete
 
         public async Task<ArticleListViewModel> GetAuthorsArticleAsync(Guid authorId, int currentPage = 1, int pageSize = 4, bool isAscending = false)
         {
-            pageSize = pageSize > 20 ? 20 : pageSize;
+            var articleCache = await cachingService.GetCached<ArticleListViewModel>($"article:{authorId}:{currentPage}:${pageSize}");
 
-            var articles = await _unitOfWorkk.GetRepository<Article>().GetAllAsync(x => x.IsDeleted == false && x.User.Id == authorId, x => x.Category, i => i.Image,
-                u => u.User, ui => ui.User.Image);
-            var sortedArticles = isAscending ? articles.OrderBy(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList()
-                : articles.OrderByDescending(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
-
-
-            return new ArticleListViewModel
+            if (articleCache != null)
             {
-                Articles = sortedArticles,
-                currentPage = currentPage,
-                pageSize = pageSize,
-                TotalCount = articles.Count(),
-                IsAscending = isAscending
-            };
+                return articleCache;
+            }else {
+                pageSize = pageSize > 20 ? 20 : pageSize;
+
+                var articles = await _unitOfWorkk.GetRepository<Article>().GetAllAsync(x => x.IsDeleted == false && x.User.Id == authorId, x => x.Category, i => i.Image,
+                    u => u.User, ui => ui.User.Image);
+                var sortedArticles = isAscending ? articles.OrderBy(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList()
+                    : articles.OrderByDescending(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+                var map = mapper.Map<List<ArticleViewModel>>(sortedArticles);
+
+                var res = new ArticleListViewModel
+                {
+                    Articles = map,
+                    currentPage = currentPage,
+                    pageSize = pageSize,
+                    TotalCount = articles.Count(),
+                    IsAscending = isAscending
+                };
+           
+                await cachingService.SetCached<ArticleListViewModel>($"article:{authorId}:{currentPage}:${pageSize}",res,300);
+                await cachingService.AddKeyToCacheList($"article:{authorId}:{currentPage}:${pageSize}","tag:articles",300);
+
+                return res;
+            }
+            
         }
 
 
 
         public async Task<ArticleListViewModel> GetAllByPagingAsync(Guid? categoryId, int currentPage = 1, int pageSize = 5, bool isAscending = false)
         {
-            pageSize = pageSize > 20 ? 20 : pageSize;
+            var articleCache = await cachingService.GetCached<ArticleListViewModel>($"article:{categoryId}:{currentPage}:${pageSize}");
 
-            var articles = categoryId == null
-                ? await _unitOfWorkk.GetRepository<Article>().GetAllAsync(a => !a.IsDeleted, a => a.Category, i => i.Image, u => u.User)
-                : await _unitOfWorkk.GetRepository<Article>().GetAllAsync(a => !a.IsDeleted && a.CategoryID == categoryId, x => x.Category, i => i.Image, u => u.User,x=>x.Comments);
-
-            var sortedArticles = isAscending ? articles.OrderBy(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList()
-                : articles.OrderByDescending(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
-
-            return new ArticleListViewModel
+            if (articleCache != null)
             {
-                Articles = sortedArticles,
-                CategoryId = categoryId == null ? null : categoryId.Value,
-                currentPage = currentPage,
-                pageSize = pageSize,
-                TotalCount = articles.Count(),
-                IsAscending = isAscending
-            };
+                return articleCache;
+            }else {
+                pageSize = pageSize > 20 ? 20 : pageSize;
+
+                var articles = categoryId == null
+                    ? await _unitOfWorkk.GetRepository<Article>().GetAllAsync(a => !a.IsDeleted, a => a.Category, i => i.Image, u => u.User)
+                    : await _unitOfWorkk.GetRepository<Article>().GetAllAsync(a => !a.IsDeleted && a.CategoryID == categoryId, x => x.Category, i => i.Image, u => u.User,x=>x.Comments);
+
+                var sortedArticles = isAscending ? articles.OrderBy(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList()
+                    : articles.OrderByDescending(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+                var map = mapper.Map<List<ArticleViewModel>>(sortedArticles);
+                var res = new ArticleListViewModel
+                {
+                    Articles = map,
+                    CategoryId = categoryId == null ? null : categoryId.Value,
+                    currentPage = currentPage,
+                    pageSize = pageSize,
+                    TotalCount = articles.Count(),
+                    IsAscending = isAscending
+                };
+
+                await cachingService.SetCached<ArticleListViewModel>($"article:{categoryId}:{currentPage}:${pageSize}",res,300);
+                await cachingService.AddKeyToCacheList($"article:{categoryId}:{currentPage}:${pageSize}","tag:articles",300);
+
+                return res; 
+
+            }
 
         }
 
         public async Task<List<ArticleIndexViewModel>?> GetAllArticleByPagingAsync(int currentPage = 1, int pageSize = 5, bool isAscending = false)
         {
-            pageSize = pageSize > 20 ? 20 : pageSize;
+            var articleCache = await cachingService.GetCached<List<ArticleIndexViewModel>>($"article:{currentPage}:${pageSize}");
 
-            var articles = await _unitOfWorkk.GetRepository<Article>().GetAllAsync(a => !a.IsDeleted, x => x.Category, i => i.Image, u => u.User, x => x.Comments);
-            var count = articles.Count;
-            if (articles != null)
+            if (articleCache != null)
             {
-                List<Article>? sortedArticles = new List<Article>();
-                if ((currentPage+pageSize) < count) { 
-                sortedArticles = isAscending ? articles.OrderBy(x => x.CreatedDate).Skip(currentPage - 1).Take(pageSize).ToList()
-                    : articles.OrderByDescending(x => x.CreatedDate).Skip(currentPage - 1).Take(pageSize).ToList();
-                   
-                }else
-                {
-                 var newPageSize = (currentPage+pageSize)-count;
-                 sortedArticles = isAscending ? articles.OrderBy(x => x.CreatedDate).Skip(currentPage - 1).Take(newPageSize).ToList()
-                    : articles.OrderByDescending(x => x.CreatedDate).Skip(currentPage - 1).Take(newPageSize).ToList();
-                }
+                return articleCache;
+            }else {
+                pageSize = pageSize > 20 ? 20 : pageSize;
 
-                if (!sortedArticles.IsNullOrEmpty())
+                var articles = await _unitOfWorkk.GetRepository<Article>().GetAllAsync(a => !a.IsDeleted, x => x.Category, i => i.Image, u => u.User, x => x.Comments);
+                var count = articles.Count;
+                if (articles != null)
                 {
-                    var map = mapper.Map<List<ArticleIndexViewModel>>(sortedArticles);
-                    return map;
+                    List<Article>? sortedArticles = new List<Article>();
+                    if ((currentPage+pageSize) < count) { 
+                    sortedArticles = isAscending ? articles.OrderBy(x => x.CreatedDate).Skip(currentPage - 1).Take(pageSize).ToList()
+                        : articles.OrderByDescending(x => x.CreatedDate).Skip(currentPage - 1).Take(pageSize).ToList();
+                    
+                    }else
+                    {
+                    var newPageSize = (currentPage+pageSize)-count;
+                    sortedArticles = isAscending ? articles.OrderBy(x => x.CreatedDate).Skip(currentPage - 1).Take(newPageSize).ToList()
+                        : articles.OrderByDescending(x => x.CreatedDate).Skip(currentPage - 1).Take(newPageSize).ToList();
+                    }
+
+                    if (sortedArticles != null && sortedArticles.Count > 0)
+                    {
+                        var map = mapper.Map<List<ArticleIndexViewModel>>(sortedArticles);
+                        await cachingService.SetCached<List<ArticleIndexViewModel>>($"article:{currentPage}:${pageSize}",map,300);
+                        await cachingService.AddKeyToCacheList($"article:{currentPage}:${pageSize}","tag:articles",300);
+                        return map;
+                    }
                 }
             }
+            
 
             return null;
         }
 
         public async Task<ArticleListViewModel> SearchAsync(string keyword, int currentPage = 1, int pageSize = 3, bool isAscending = false)
         {
-
+       
             pageSize = pageSize > 20 ? 20 : pageSize;
-
-
 
             var articles = await _unitOfWorkk.GetRepository<Article>().GetAllAsync(a => !a.IsDeleted &&
             (a.Title.Contains(keyword) || (a.Description.Contains(keyword) || a.Category.Name.Contains(keyword))), a => a.Category, i => i.Image, u => u.User);
@@ -362,9 +596,10 @@ namespace Blog.Service.Services.Concrete
             var sortedArticles = isAscending ? articles.OrderBy(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList()
                 : articles.OrderByDescending(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
 
+             var map = mapper.Map<List<ArticleViewModel>>(sortedArticles);
             return new ArticleListViewModel
             {
-                Articles = sortedArticles,
+                Articles = map,
                 currentPage = currentPage,
                 pageSize = pageSize,
                 TotalCount = articles.Count(),
@@ -376,21 +611,32 @@ namespace Blog.Service.Services.Concrete
 
         public async Task<ArticleListViewModel> GetArticlesByCategoryAsync(Guid categoryId, int currentPage = 1, int pageSize = 3, bool isAscending = false)
         {
-            pageSize = pageSize > 20 ? 20 : pageSize;
+            var articleCache = await cachingService.GetCached<ArticleListViewModel>($"article2:{categoryId}:{currentPage}:${pageSize}");
 
-            var articles = await _unitOfWorkk.GetRepository<Article>().GetAllAsync(x => x.IsDeleted == false && x.CategoryID == categoryId, x => x.Category, x => x.Image, x => x.User);
-
-            var sortedArticles = isAscending ? articles.OrderBy(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList()
-                : articles.OrderByDescending(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
-
-            return new ArticleListViewModel
+            if (articleCache != null)
             {
-                Articles = sortedArticles,
-                currentPage = currentPage,
-                pageSize = pageSize,
-                TotalCount = articles.Count(),
-                IsAscending = isAscending
-            };
+                return articleCache;
+            }else {
+                pageSize = pageSize > 20 ? 20 : pageSize;
+
+                var articles = await _unitOfWorkk.GetRepository<Article>().GetAllAsync(x => x.IsDeleted == false && x.CategoryID == categoryId, x => x.Category, x => x.Image, x => x.User);
+
+                var sortedArticles = isAscending ? articles.OrderBy(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList()
+                    : articles.OrderByDescending(x => x.CreatedDate).Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+                var map = mapper.Map<List<ArticleViewModel>>(sortedArticles);
+                var res = new ArticleListViewModel
+                {
+                    Articles = map,
+                    currentPage = currentPage,
+                    pageSize = pageSize,
+                    TotalCount = articles.Count(),
+                    IsAscending = isAscending
+                };
+                await cachingService.SetCached<ArticleListViewModel>($"article2:{categoryId}:{currentPage}:${pageSize}",res,300);
+                await cachingService.AddKeyToCacheList($"article2:{categoryId}:{currentPage}:${pageSize}","tag:articles",300);
+                return res;
+            }   
         }
 
 
@@ -400,6 +646,13 @@ namespace Blog.Service.Services.Concrete
 
             var getArticle = await _unitOfWorkk.GetRepository<Article>().GetAsync(x => x.Id == id);
             var visitor = await _unitOfWorkk.GetRepository<Visitor>().GetAsync(x => x.IpAdress == ipAdress);
+
+            if (visitor == null)
+            {
+                visitor = new Visitor(ipAdress, httpContextAccessor.HttpContext.Request.Headers["User-Agent"].ToString());
+                await _unitOfWorkk.GetRepository<Visitor>().AddAsync(visitor);
+                await _unitOfWorkk.SaveAsync();
+            }
 
             var articleVisitor = await _unitOfWorkk.GetRepository<ArticleVisitor>().CountAsync(x => x.Visitor.Id == visitor.Id
                 && x.Article.Id == id
@@ -430,6 +683,13 @@ namespace Blog.Service.Services.Concrete
             var getArticle = await _unitOfWorkk.GetRepository<Article>().GetAsync(x => x.Id == articleId);
             var visitor = await _unitOfWorkk.GetRepository<Visitor>().GetAsync(x => x.IpAdress == ipAdress);
 
+            if (visitor == null)
+            {
+                visitor = new Visitor(ipAdress, httpContextAccessor.HttpContext.Request.Headers["User-Agent"].ToString());
+                await _unitOfWorkk.GetRepository<Visitor>().AddAsync(visitor);
+                await _unitOfWorkk.SaveAsync();
+            }
+
             var isVisitorExists = await _unitOfWorkk.GetRepository<Comment>().GetAllAsync(x => x.VisitorId == visitor.Id && x.ArticleId == articleId);
 
             if (isVisitorExists.Count > 3)
@@ -456,6 +716,9 @@ namespace Blog.Service.Services.Concrete
                 results.Item1 = true;
             }
 
+            await cachingService.RemoveAllKeysFromCacheList("tag:comments");
+
+
             return results;
         }
 
@@ -464,9 +727,20 @@ namespace Blog.Service.Services.Concrete
 
         public async Task<List<CommentViewModel>> GetAllCommentsAsync()
         {
-            var comments = await _unitOfWorkk.GetRepository<Comment>().GetAllAsync(x => !x.IsDeleted, x => x.Article);
-            var map = mapper.Map<List<CommentViewModel>>(comments);
-            return map;
+            var commentCache = await cachingService.GetCached<List<CommentViewModel>>($"comments");
+
+            if (commentCache != null)
+            {
+                return commentCache;
+            }else {
+                var comments = await _unitOfWorkk.GetRepository<Comment>().GetAllAsync(x => !x.IsDeleted, x => x.Article);
+                var map = mapper.Map<List<CommentViewModel>>(comments);
+
+                await cachingService.SetCached<List<CommentViewModel>>($"comments",map,300);
+                await cachingService.AddKeyToCacheList($"comments","tag:comments",300);
+                return map;
+
+            }
         }
 
 
@@ -478,30 +752,36 @@ namespace Blog.Service.Services.Concrete
             await _unitOfWorkk.GetRepository<Article>().UpdateAsync(comment.Article);
             await _unitOfWorkk.GetRepository<Comment>().DeleteAsync(comment);
             await _unitOfWorkk.SaveAsync();
+
+            
+            await cachingService.RemoveAllKeysFromCacheList("tag:comments");
+            await cachingService.RemoveKeysFromCacheList("tag:articles",[$"article1:{comment.Article.Id}",$"article2:{comment.Article.Id}",$"article3:{comment.Article.Slug}"],300);
             return comment.Name;
         }
 
 
-        public async Task<string?> ApproveCommentAsync(Guid articleId, Guid commentId, string approved)
+        public async Task<string?> ApproveCommentAsync(Guid? articleId, Guid? commentId, bool approved)
         {
-            bool? approve = bool.Parse(approved);
+          
 
-            if (approve != null)
+            if (commentId != null && articleId!=null)
             {
                 var comment = await _unitOfWorkk.GetRepository<Comment>().GetAsync(x => x.IsDeleted == false && x.Id == commentId && x.ArticleId == articleId, x => x.Article);
                 if (comment != null)
                 {
-                    if (approve.Value)
-                    {
-                        comment.IsAprroved = false;
-                    }
-                    else
-                    {
-                        comment.IsAprroved = true;
-                    }
+                    
+                    comment.IsAprroved = approved!;
+                    
+                   
 
                     await _unitOfWorkk.GetRepository<Comment>().UpdateAsync(comment);
                     await _unitOfWorkk.SaveAsync();
+
+                  
+                    var d1 = await cachingService.RemoveAllKeysFromCacheList("tag:comments");
+                    var d2 = await cachingService.RemoveKeysFromCacheList("tag:articles",[$"article1:{comment.Article.Id}",$"article2:{comment.Article.Id}",$"article3:{comment.Article.Slug}"],300);
+                 
+
                     return comment.Name;
                 }
             }

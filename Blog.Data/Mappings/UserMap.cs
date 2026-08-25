@@ -1,4 +1,4 @@
-﻿using Blog.Entity.Entities;
+using Blog.Entity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -48,7 +48,6 @@ namespace Blog.Data.Mappings
             // Each User can have many entries in the UserRole join table
             b.HasMany<TUserRole>().WithOne().HasForeignKey(ur => ur.UserId).IsRequired();
 
-            /*
             var superadmin = new TUser
             {
                 Id = Guid.Parse("{69bffe8d-6794-45d2-bd0f-48599928cdee}"),
@@ -116,7 +115,6 @@ namespace Blog.Data.Mappings
         private string CreatePasswordHash(TUser user,string password) {
             var passwordHasher = new PasswordHasher<TUser>();
             return passwordHasher.HashPassword(user,password);
-        }*/
         }
     }
 }

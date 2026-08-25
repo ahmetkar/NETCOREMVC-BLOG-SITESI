@@ -1,4 +1,5 @@
-﻿using Blog.Entity.Entities;
+﻿using Blog.Entity.DTOs.Images;
+using Blog.Entity.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,6 @@ namespace Blog.Entity.DTOs.User
         public int AccessFailedCount { get; set; }
         public string Role { get; set; }
         public string Biography { get; set; }
-        public Image Image { get; set; }
+        public ImageViewModel Image { get; set; }
     }
 }

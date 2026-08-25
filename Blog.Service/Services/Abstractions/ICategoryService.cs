@@ -1,4 +1,4 @@
-﻿using Blog.Entity.DTOs.Category;
+using Blog.Entity.DTOs.Category;
 using Blog.Entity.Entities;
 using System;
 using System.Collections.Generic;
@@ -14,6 +14,7 @@ namespace Blog.Service.Services.Abstractions
         public Task<List<CategoryViewModel>> GetAllDeletedCategoriesAsync();
         public Task AddCategoryAsync(CategoryCreateModel createModel);
         public  Task<Category> GetCategoryByGuid(Guid id);
+        public Task<Category> GetCategoryBySlugAsync(string slug);
         public Task<string> UpdateCategoryAsync(CategoryUpdateModel updateModel);
         public Task<string> SafeDeleteCategoryAsync(Guid categoryId);
         public Task<string> UndoDeleteCategoryAsync(Guid categoryId);

@@ -1,4 +1,5 @@
-﻿using Blog.Entity.Entities;
+﻿using Blog.Entity.DTOs.Article;
+using Blog.Entity.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,7 @@ namespace Blog.Entity.DTOs.Comment
 
         public Guid Id { get; set; }
         public int VisitorId { get; set; }
-        public Visitor Visitor { get; set; }
         public Guid ArticleId { get; set; }
-        public Entities.Article Article { get; set; }
         public string CommentText { get; set; }
         public string Email { get; set; }
         public string Name { get; set; }

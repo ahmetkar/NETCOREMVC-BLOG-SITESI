@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Blog.Data.UnitOfWorks;
 using Blog.Entity.DTOs.User;
 using Blog.Entity.Entities;
@@ -28,7 +28,7 @@ namespace Blog.Service.Services.Concrete
         private readonly IImageHelper imageHelper;
         private readonly IHttpContextAccessor contextAccessor;
         private readonly SignInManager<TUser> signInManager;
-        private readonly ClaimsPrincipal _user;
+        private ClaimsPrincipal _user => contextAccessor.HttpContext?.User;
 
         public UserService(IMapper mapper, IUnitOfWorkk unitOfWorkk, UserManager<TUser> userManager, RoleManager<TRole> roleManager, IImageHelper imageHelper, IHttpContextAccessor contextAccessor,SignInManager<TUser> signInManager)
         {
@@ -39,7 +39,6 @@ namespace Blog.Service.Services.Concrete
             this.imageHelper = imageHelper;
             this.contextAccessor = contextAccessor;
             this.signInManager = signInManager;
-            _user = contextAccessor.HttpContext.User;
         }
 
 
@@ -50,6 +49,7 @@ namespace Blog.Service.Services.Concrete
         {
             var map = mapper.Map<TUser>(userCreateModel);
             map.UserName = userCreateModel.Email;
+            map.Biography = map.Biography ?? "";
             var result = await userManager.CreateAsync(map, string.IsNullOrEmpty(userCreateModel.Password) ? "" : userCreateModel.Password);
             if (result.Succeeded) {
                 var findRole = await roleManager.FindByIdAsync(userCreateModel.RoleId.ToString());
@@ -134,6 +134,10 @@ namespace Blog.Service.Services.Concrete
                 var userRole = await GetUserRoleAsync(user);
                 if (!string.IsNullOrEmpty(userRole))
                 {
+                    mapper.Map(userUpdate, user);
+                    user.UserName = userUpdate.Email;
+                    user.SecurityStamp = Guid.NewGuid().ToString();
+                    
                     var result = await userManager.UpdateAsync(user);
                     if (result.Succeeded)
                     {
@@ -159,7 +163,21 @@ namespace Blog.Service.Services.Concrete
 
         public async Task<Guid> ImageUpload(string? oldImage, string Title, IFormFile imageFile, ImageType type, string userEmail)
         {
-            if(oldImage != null)imageHelper.Delete(oldImage);
+            if (oldImage != null)
+            {
+                var oldImgEntity = await unitOfWorkk.GetRepository<Image>().GetAsync(x => x.FileName == oldImage, x => x.Articles, x => x.Users);
+                
+                // Do not delete default images or images used by others
+                var isDefaultImage = oldImgEntity != null && 
+                    (oldImgEntity.Id == Guid.Parse("{21c11c2f-b0dd-43f8-bf95-1d0c2940fa2d}") || 
+                     oldImgEntity.Id == Guid.Parse("{f71f4b9a-aa60-461d-b398-de31001bf214}"));
+
+                if (oldImgEntity != null && !isDefaultImage && !oldImgEntity.Articles.Any() && oldImgEntity.Users.Count <= 1)
+                {
+                    imageHelper.Delete(oldImage);
+                    await unitOfWorkk.GetRepository<Image>().DeleteAsync(oldImgEntity);
+                }
+            }
 
             var imageUpload = await imageHelper.Upload(Title, imageFile, type);
             if (imageUpload != null)
@@ -191,39 +209,40 @@ namespace Blog.Service.Services.Concrete
         //Modelstateler dönmüyor
         public async Task<bool> UserProfileUpdateAsync(UserProfileViewModel userProfile)
         {
-            if (userProfile.CurrentPassword == null) return false;
             var userId = _user.GetLoggedInUserId();
-            if (!userId.Equals(Guid.Empty)) { 
-            var user = await GetUserByIdAsync(userId);
-            if (user != null) { 
-                var isVerified = await userManager.CheckPasswordAsync(user, userProfile.CurrentPassword);
-                if (isVerified && userProfile.NewPassword != null)
+            if (!userId.Equals(Guid.Empty))
+            {
+                var user = await GetUserByIdAsync(userId);
+                if (user != null)
                 {
-                    var result = await userManager.ChangePasswordAsync(user, userProfile.CurrentPassword, userProfile.NewPassword);
-                    if (result.Succeeded)
+                    bool passwordChanged = false;
+
+                    if (!string.IsNullOrEmpty(userProfile.CurrentPassword) && !string.IsNullOrEmpty(userProfile.NewPassword))
                     {
-                        await userManager.UpdateSecurityStampAsync(user);
-                        await signInManager.SignOutAsync();
-                        await signInManager.PasswordSignInAsync(user, userProfile.NewPassword, true, false);
-
-                        mapper.Map(userProfile, user);
-
-                        if (userProfile.Photo != null)
+                        var isVerified = await userManager.CheckPasswordAsync(user, userProfile.CurrentPassword);
+                        if (isVerified)
                         {
-                            user.ImageId = await ImageUpload(userProfile.CurrentImage, userProfile.FirstName, userProfile.Photo, ImageType.User, userProfile.Email);
+                            var result = await userManager.ChangePasswordAsync(user, userProfile.CurrentPassword, userProfile.NewPassword);
+                            if (result.Succeeded)
+                            {
+                                await userManager.UpdateSecurityStampAsync(user);
+                                await signInManager.SignOutAsync();
+                                await signInManager.PasswordSignInAsync(user, userProfile.NewPassword, true, false);
+                                passwordChanged = true;
+                            }
+                            else return false;
                         }
-
-                        await userManager.UpdateAsync(user);
-                        await unitOfWorkk.SaveAsync();
-
-                        return true;
+                        else return false;
                     }
-                    else return false;
-                }
-                else if (isVerified)
-                {
-                    await userManager.UpdateSecurityStampAsync(user);
+
+                    // Save existing values that shouldn't be overwritten by null
+                    var existingBiography = user.Biography;
+                    
+                    // Update profile properties regardless of password change
                     mapper.Map(userProfile, user);
+                    
+                    // Restore existing biography if frontend didn't provide one
+                    user.Biography = userProfile.Biography ?? existingBiography ?? "";
 
                     if (userProfile.Photo != null)
                     {
@@ -232,10 +251,9 @@ namespace Blog.Service.Services.Concrete
 
                     await userManager.UpdateAsync(user);
                     await unitOfWorkk.SaveAsync();
+
                     return true;
                 }
-           
-            }
             }
             return false;
         }

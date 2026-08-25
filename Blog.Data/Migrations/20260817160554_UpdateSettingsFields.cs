@@ -1,0 +1,198 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Blog.Data.Migrations
+{
+    /// <inheritdoc />
+    public partial class UpdateSettingsFields : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DeleteData(
+                table: "SiteSettings",
+                keyColumn: "Id",
+                keyValue: new Guid("64c94f8c-a29b-44f7-bd83-cfe7a553ae65"));
+
+            migrationBuilder.DropColumn(
+                name: "SidebarBottomArticleSetting",
+                table: "SiteSettings");
+
+            migrationBuilder.DropColumn(
+                name: "SidebarTopArticleSetting",
+                table: "SiteSettings");
+
+            migrationBuilder.DropColumn(
+                name: "TopArticleSetting",
+                table: "SiteSettings");
+
+            migrationBuilder.UpdateData(
+                table: "AspNetRoles",
+                keyColumn: "Id",
+                keyValue: new Guid("0e4520f6-4144-4b4c-9724-c651046ee24a"),
+                column: "ConcurrencyStamp",
+                value: "33ed5302-89e1-4773-97e5-f8b0316797bc");
+
+            migrationBuilder.UpdateData(
+                table: "AspNetRoles",
+                keyColumn: "Id",
+                keyValue: new Guid("b20731ee-51ed-4849-8d24-82d4a998edda"),
+                column: "ConcurrencyStamp",
+                value: "075f6e09-eac5-42c0-b693-85448cffe630");
+
+            migrationBuilder.UpdateData(
+                table: "AspNetRoles",
+                keyColumn: "Id",
+                keyValue: new Guid("dddfbe14-bb8f-4c4f-af4e-c1be34ea9b88"),
+                column: "ConcurrencyStamp",
+                value: "9b51be9c-a6d2-4554-b382-42183de25e48");
+
+            migrationBuilder.UpdateData(
+                table: "AspNetUsers",
+                keyColumn: "Id",
+                keyValue: new Guid("070f54e2-bf16-4d50-bd52-a7f9cd87c479"),
+                columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
+                values: new object[] { "560272fe-d32d-48d6-b0fb-3c0cd9d2ecca", "AQAAAAIAAYagAAAAEGmBfKoJoccTct4eoGYjzx/f2elbpaxKDMttwYXK4xnpRKI1uh95qyA6J+ik4CzQkw==", "dd50c70a-e3b3-4d58-9b67-5d113f777d9d" });
+
+            migrationBuilder.UpdateData(
+                table: "AspNetUsers",
+                keyColumn: "Id",
+                keyValue: new Guid("258794ef-c8f5-4ab5-8818-bcfd3218036a"),
+                columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
+                values: new object[] { "dbc4939a-2b4c-4c87-b2a7-874870f16330", "AQAAAAIAAYagAAAAEKd2W4UMgBpjpStViSW0uMNMzl+fh09wxOMIc+yBSwAsD7FcoAicG36HJtGJ4ypX+g==", "fdd43e4e-4c31-4bd5-8efe-2cf1cf56c159" });
+
+            migrationBuilder.UpdateData(
+                table: "AspNetUsers",
+                keyColumn: "Id",
+                keyValue: new Guid("69bffe8d-6794-45d2-bd0f-48599928cdee"),
+                columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
+                values: new object[] { "cd026c06-56b0-4c30-9e04-21b6070a6189", "AQAAAAIAAYagAAAAEPGoOxwmx9xgnsXi6pIZxEmZVA0PaQHNHWfYP8xWEO//LpXIOngBpxgYIcj0AL2Y6w==", "929a1878-424a-464d-ac0f-a0084ac44e06" });
+
+            migrationBuilder.UpdateData(
+                table: "Pages",
+                keyColumn: "Id",
+                keyValue: new Guid("254f012e-4f64-4410-a98d-720e35275c25"),
+                column: "CreatedDate",
+                value: new DateTime(2026, 8, 17, 19, 5, 52, 980, DateTimeKind.Local).AddTicks(6522));
+
+            migrationBuilder.UpdateData(
+                table: "Pages",
+                keyColumn: "Id",
+                keyValue: new Guid("a64419c7-c4e0-4501-92a7-42870acb95cf"),
+                column: "CreatedDate",
+                value: new DateTime(2026, 8, 17, 19, 5, 52, 980, DateTimeKind.Local).AddTicks(5111));
+
+            migrationBuilder.UpdateData(
+                table: "Pages",
+                keyColumn: "Id",
+                keyValue: new Guid("a6dcc8a8-0b2d-418b-851f-b30022908a90"),
+                column: "CreatedDate",
+                value: new DateTime(2026, 8, 17, 19, 5, 52, 980, DateTimeKind.Local).AddTicks(6553));
+
+            migrationBuilder.InsertData(
+                table: "SiteSettings",
+                columns: new[] { "Id", "AdminPanelLogoId", "Category1Id", "Category2Id", "Category3Id", "Category4Id", "Category5Id", "CreatedBy", "CreatedDate", "DeleteDate", "DeletedBy", "FacebookUrl", "FooterDescription", "FooterLogoId", "InstagramUrl", "IsAIEnabled", "IsDeleted", "LogoImageId", "ModifiedBy", "ModifiedDate", "SiteTitle", "Twitterurl", "Youtubeurl" },
+                values: new object[] { new Guid("d0568df3-bed6-42c8-bbf6-0f8aaaf54c2a"), new Guid("57597e1f-9547-423c-9485-ad7a390bd5a6"), null, null, null, null, null, "deneme@gmail.com", new DateTime(2023, 5, 15, 7, 0, 0, 0, DateTimeKind.Unspecified), null, null, "https://facebook.com/", "Techblog is a blog site.", new Guid("57597e1f-9547-423c-9485-ad7a390bd5a6"), "https://instagram.com/", true, false, new Guid("e30e3542-ca2a-4f87-8366-65fd3e287a7d"), null, null, "Blog Web", "https://twitter.com", "https://youtube.com" });
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DeleteData(
+                table: "SiteSettings",
+                keyColumn: "Id",
+                keyValue: new Guid("d0568df3-bed6-42c8-bbf6-0f8aaaf54c2a"));
+
+            migrationBuilder.AddColumn<string>(
+                name: "SidebarBottomArticleSetting",
+                table: "SiteSettings",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "SidebarTopArticleSetting",
+                table: "SiteSettings",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "TopArticleSetting",
+                table: "SiteSettings",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.UpdateData(
+                table: "AspNetRoles",
+                keyColumn: "Id",
+                keyValue: new Guid("0e4520f6-4144-4b4c-9724-c651046ee24a"),
+                column: "ConcurrencyStamp",
+                value: "6f8d8c3d-98b2-4c5e-9b5e-ace2358b5a04");
+
+            migrationBuilder.UpdateData(
+                table: "AspNetRoles",
+                keyColumn: "Id",
+                keyValue: new Guid("b20731ee-51ed-4849-8d24-82d4a998edda"),
+                column: "ConcurrencyStamp",
+                value: "d97c28bd-e005-48b5-b9af-b7b3469410be");
+
+            migrationBuilder.UpdateData(
+                table: "AspNetRoles",
+                keyColumn: "Id",
+                keyValue: new Guid("dddfbe14-bb8f-4c4f-af4e-c1be34ea9b88"),
+                column: "ConcurrencyStamp",
+                value: "2eabe7d5-a441-4669-bbbd-910c762ab3e0");
+
+            migrationBuilder.UpdateData(
+                table: "AspNetUsers",
+                keyColumn: "Id",
+                keyValue: new Guid("070f54e2-bf16-4d50-bd52-a7f9cd87c479"),
+                columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
+                values: new object[] { "9e270534-cb24-4d35-9683-f3fe97b49202", "AQAAAAIAAYagAAAAEIpzglJodDTu+R4Hwj1z5wno+EYzoJ8PH/ZOyaB+AqQxtAUKXSMKelWEUskLyElJoA==", "c6bcacea-3c12-4aa1-b34a-ca9f50530b6c" });
+
+            migrationBuilder.UpdateData(
+                table: "AspNetUsers",
+                keyColumn: "Id",
+                keyValue: new Guid("258794ef-c8f5-4ab5-8818-bcfd3218036a"),
+                columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
+                values: new object[] { "16158c2d-a0f6-4719-9b8f-77d6acafcd38", "AQAAAAIAAYagAAAAEGJ4ct6x9px9m1X/XPX64ZEsElDnFCR0PobM3WoM2UW5QB5QCTbPiIwHKtXGTHsUeA==", "194498fc-38de-4da6-9f2e-ac2dde863e37" });
+
+            migrationBuilder.UpdateData(
+                table: "AspNetUsers",
+                keyColumn: "Id",
+                keyValue: new Guid("69bffe8d-6794-45d2-bd0f-48599928cdee"),
+                columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
+                values: new object[] { "d84ba382-6cb1-4129-b51e-b8d38fab4588", "AQAAAAIAAYagAAAAEFiWDIxYe/2cE6Hj8NKF/XYV/xDXoxHK4SmfemzounDD3RYRM7YgRCJ5PNJ1J7025w==", "8dab6a6c-236b-4335-86b8-fa82c1e40415" });
+
+            migrationBuilder.UpdateData(
+                table: "Pages",
+                keyColumn: "Id",
+                keyValue: new Guid("254f012e-4f64-4410-a98d-720e35275c25"),
+                column: "CreatedDate",
+                value: new DateTime(2026, 8, 17, 18, 51, 27, 910, DateTimeKind.Local).AddTicks(1813));
+
+            migrationBuilder.UpdateData(
+                table: "Pages",
+                keyColumn: "Id",
+                keyValue: new Guid("a64419c7-c4e0-4501-92a7-42870acb95cf"),
+                column: "CreatedDate",
+                value: new DateTime(2026, 8, 17, 18, 51, 27, 910, DateTimeKind.Local).AddTicks(839));
+
+            migrationBuilder.UpdateData(
+                table: "Pages",
+                keyColumn: "Id",
+                keyValue: new Guid("a6dcc8a8-0b2d-418b-851f-b30022908a90"),
+                column: "CreatedDate",
+                value: new DateTime(2026, 8, 17, 18, 51, 27, 910, DateTimeKind.Local).AddTicks(1823));
+
+            migrationBuilder.InsertData(
+                table: "SiteSettings",
+                columns: new[] { "Id", "AdminPanelLogoId", "Category1Id", "Category2Id", "Category3Id", "Category4Id", "Category5Id", "CreatedBy", "CreatedDate", "DeleteDate", "DeletedBy", "FacebookUrl", "FooterDescription", "FooterLogoId", "InstagramUrl", "IsAIEnabled", "IsDeleted", "LogoImageId", "ModifiedBy", "ModifiedDate", "SidebarBottomArticleSetting", "SidebarTopArticleSetting", "SiteTitle", "TopArticleSetting", "Twitterurl", "Youtubeurl" },
+                values: new object[] { new Guid("64c94f8c-a29b-44f7-bd83-cfe7a553ae65"), new Guid("57597e1f-9547-423c-9485-ad7a390bd5a6"), null, null, null, null, null, "deneme@gmail.com", new DateTime(2023, 5, 15, 7, 0, 0, 0, DateTimeKind.Unspecified), null, null, "https://facebook.com/", "Techblog is a blog site.", new Guid("57597e1f-9547-423c-9485-ad7a390bd5a6"), "https://instagram.com/", true, false, new Guid("e30e3542-ca2a-4f87-8366-65fd3e287a7d"), null, null, "most-commented", "most-viewed", "Blog Web", "last-added", "https://twitter.com", "https://youtube.com" });
+        }
+    }
+}

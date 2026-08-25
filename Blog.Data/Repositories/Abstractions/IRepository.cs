@@ -11,6 +11,8 @@ namespace Blog.Data.Repositories.Abstractions
     public interface IRepository<T> where T :class,IEntityBase,new()
     {
         Task AddAsync(T entity);
+
+        IQueryable<T> GetQueryable();
         Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null, params Expression<Func<T, object>>[] includeProperties);
         Task<List<T>> GetAllWithLimitAsync(int limit, Expression<Func<T, bool>> predicate = null, bool desc = true, Expression<Func<T, object>> orderBypredicate = null, params Expression<Func<T, object>>[] includeProperties);
         Task<T> GetAsync(Expression<Func<T, bool>> predicate , params Expression<Func<T, object>>[] includeProperties);

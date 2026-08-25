@@ -1,4 +1,4 @@
-﻿using Blog.Core.Entities;
+using Blog.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +25,7 @@ namespace Blog.Entity.Entities
         public string Description { get; set; }
 
         public string Content { get; set; }
+        public string Slug { get; set; }
 
         public int ViewCount { get; set; } = 0;
         public int CommentCount { get; set; } = 0;

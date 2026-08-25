@@ -1,4 +1,4 @@
-﻿using Blog.Entity.DTOs.Images;
+using Blog.Entity.DTOs.Images;
 using Blog.Entity.Enums;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -8,21 +8,44 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Google.Cloud.Storage.V1;
+using Microsoft.Extensions.Configuration;
+using Google.Apis.Auth.OAuth2;
+using System.Drawing;
 
 namespace Blog.Service.Helpers.Images
 {
     public class ImageHelper : IImageHelper
     {
-        private readonly IWebHostEnvironment env;
-        private readonly string wwwroot;
-        private const string imgFolder = "images";
-        private const string articleImageFolder = "article-images";
-        private const string userImageFolder = "user-images";
-        private const string siteImageFolder = "site-images";
+   
+        IConfiguration _configuration;
 
-        public ImageHelper(IWebHostEnvironment env) {
-            this.env = env;
-            wwwroot = env.WebRootPath;
+        private StorageClient _storageClient;
+        private string _bucketName;
+        public ImageHelper(IConfiguration configuration) {
+       
+            _configuration = configuration;
+
+            string path = _configuration["GoogleCloudStorage:CredentialPath"]!;
+            if (path == null)
+            {
+                throw new InvalidOperationException("Credential bulunamadı."); 
+            }
+           
+            var json = File.ReadAllText(path);
+
+            var serviceAccountCredential =
+                CredentialFactory.FromJson<ServiceAccountCredential>(json);
+
+            var credential =
+                    serviceAccountCredential.ToGoogleCredential();
+
+            this._storageClient = StorageClient.Create(credential);
+
+            this._bucketName = _configuration["GoogleCloudStorage:BucketName"]
+                ?? throw new InvalidOperationException(
+                    "GoogleCloudStorage:BucketName bulunamadı.");
+
         }
 
         private string NormalizeFileName(string text)
@@ -44,45 +67,53 @@ namespace Blog.Service.Helpers.Images
             return text;
         }
 
-        public void Delete(string imageName)
+        public async void Delete(string url)
         {
-           var fileToDelete = Path.Combine($"{wwwroot}/{imgFolder}", imageName);
-            if (File.Exists(fileToDelete))
+            try {
+            var parts = url.Split('/',StringSplitOptions.RemoveEmptyEntries);
+            var objectName = string.Join('/',parts.Skip(3));    
+            await _storageClient.DeleteObjectAsync(
+                _bucketName,
+                objectName
+            );
+            }catch(Exception ex)
             {
-                File.Delete(fileToDelete);
+                Console.WriteLine("Error deleting image -> "+url+" -> "+ex.Message);
             }
         }
 
         public async Task<ImageUploadModel> Upload(string name, IFormFile imageFile,ImageType imageType, string folderName = null)
+        {   
+
+        if (imageFile == null || imageFile.Length == 0){
+            throw new ArgumentException("Dosya boş.");
+        }
+
+        var type = imageType;
+        var folder = "";
+
+        if(type == ImageType.User) folder = "user_images";
+        else if(type == ImageType.Article) folder = "article_images";
+        else if(type == ImageType.Site) folder = "site_images";
+        
+        var normalizedName = NormalizeFileName(name);
+        var extension = Path.GetExtension(imageFile.FileName);
+        var fileName = $"{normalizedName}-{Guid.NewGuid():N}{extension}";
+        var objectName = $"{folder.TrimEnd('/')}/{fileName}";
+
+        await using var stream = imageFile.OpenReadStream();
+
+        await _storageClient.UploadObjectAsync(_bucketName,objectName,imageFile.ContentType,stream);
+          
+        return new ImageUploadModel {FullName=GetPublicUrl(objectName)};
+        }
+
+        public string GetPublicUrl(string objectName)
         {
-            folderName ??= imageType == ImageType.User ? userImageFolder : imageType == ImageType.Article ? articleImageFolder : siteImageFolder;
-
-            if (!Directory.Exists($"{wwwroot}/{imgFolder}/{folderName}")) {
-                Directory.CreateDirectory($"{wwwroot}/{imgFolder}/{folderName}");
-            }
-
-            string oldFileName = Path.GetFileNameWithoutExtension(imageFile.FileName);
-            string fileExt = Path.GetExtension(imageFile.FileName);
-
-            name = NormalizeFileName(name);
-
-            DateTime dateTime = DateTime.Now;
-
-            string newFileName = $"{name}_{dateTime.Millisecond}{fileExt}";
-            string? path = Path.Combine($"{wwwroot}/{imgFolder}/{folderName}",newFileName);
-
-            await using var stream = new FileStream(path,FileMode.Create,FileAccess.Write,FileShare.None,1024*1024,useAsync:false);
-            await imageFile.CopyToAsync(stream);
-            await stream.FlushAsync();
-
-            string message = imageType == ImageType.User ? $"{newFileName} isimli kullanıcı resmi başarıyla eklendi." : imageType == ImageType.Article ? $"{newFileName} isimli blog resmi başarıyla eklendi." : $"{newFileName} adlı site resmi başarıyla eklendi.";
-
-            return new ImageUploadModel()
-            {
-                FullName = $"{folderName}//{newFileName}"
-            };
-
+                return $"https://storage.googleapis.com/{_bucketName}/{objectName}";
         }
 
     }
+
+    
 }

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Blog.Data.UnitOfWorks;
 using Blog.Entity.DTOs.Category;
 using Blog.Entity.Entities;
@@ -19,13 +19,12 @@ namespace Blog.Service.Services.Concrete
         private readonly IUnitOfWorkk unitOfWorkk;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly ClaimsPrincipal user;
+        private ClaimsPrincipal user => httpContextAccessor.HttpContext?.User;
 
         public CategoryService(IUnitOfWorkk unitOfWorkk,IMapper mapper, IHttpContextAccessor httpContextAccessor) {
             this.unitOfWorkk = unitOfWorkk;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
-            user = httpContextAccessor.HttpContext.User;
         }
 
         public async Task<List<CategoryViewModel>> GetAllCategoriesAsync()
@@ -67,6 +66,7 @@ namespace Blog.Service.Services.Concrete
             string userEmail = user.GetLoggedInEmail();
 
             Category cat = new(createModel.Name,userEmail,DateTime.Now);
+            cat.Slug = Blog.Service.Helpers.SlugHelper.GenerateSlug(createModel.Name);
             await unitOfWorkk.GetRepository<Category>().AddAsync(cat);
             await unitOfWorkk.SaveAsync();
 
@@ -75,6 +75,12 @@ namespace Blog.Service.Services.Concrete
         public async Task<Category> GetCategoryByGuid(Guid id)
         {
             var category = await unitOfWorkk.GetRepository<Category>().GetByGuidAsync(id);
+            return category;
+        }
+
+        public async Task<Category> GetCategoryBySlugAsync(string slug)
+        {
+            var category = await unitOfWorkk.GetRepository<Category>().GetAsync(x => x.IsDeleted == false && x.Slug == slug);
             return category;
         }
 

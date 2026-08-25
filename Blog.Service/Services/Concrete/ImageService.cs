@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Blog.Data.UnitOfWorks;
 using Blog.Entity.DTOs.Images;
 using Blog.Entity.Entities;
@@ -23,7 +23,7 @@ namespace Blog.Service.Services.Concrete
         private readonly IUnitOfWorkk unitOfWorkk;
         private readonly IMapper mapper;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly ClaimsPrincipal user;
+        private ClaimsPrincipal user => httpContextAccessor.HttpContext?.User;
 
         public ImageService(IImageHelper imageHelper,IUnitOfWorkk unitOfWorkk,IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
@@ -31,13 +31,12 @@ namespace Blog.Service.Services.Concrete
             this.unitOfWorkk = unitOfWorkk;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
-            user = httpContextAccessor.HttpContext.User;
         }
 
 
         public async Task<List<ImageViewModel>?> GetAllImagesAsync()
         {
-            var images = await unitOfWorkk.GetRepository<Image>().GetAllAsync(x=>!x.IsDeleted,x=>x.Articles);
+            var images = await unitOfWorkk.GetRepository<Image>().GetAllAsync(x => !x.IsDeleted && !x.FileName.Contains("user-images"), x => x.Articles);
             if (images != null)
             {
                 var map = mapper.Map<List<ImageViewModel>>(images);
@@ -81,15 +80,17 @@ namespace Blog.Service.Services.Concrete
                 imageHelper.Delete(image.FileName);
                 await unitOfWorkk.GetRepository<Image>().DeleteAsync(image);
             }
-
-            if (imageId != null)
+            else if (imageId != null)
             {
                 var delete = await unitOfWorkk.GetRepository<Image>().GetByGuidAsync(imageId.Value);
-                imageHelper.Delete(image.FileName);
-                await unitOfWorkk.GetRepository<Image>().DeleteAsync(delete);
+                if (delete != null)
+                {
+                    imageHelper.Delete(delete.FileName);
+                    await unitOfWorkk.GetRepository<Image>().DeleteAsync(delete);
+                }
             }
 
-            
+            await unitOfWorkk.SaveAsync();
         }
 
         public async Task SaveAsync()

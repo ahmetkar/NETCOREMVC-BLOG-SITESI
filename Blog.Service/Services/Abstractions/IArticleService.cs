@@ -1,4 +1,4 @@
-﻿using Blog.Entity.DTOs.Article;
+using Blog.Entity.DTOs.Article;
 using Blog.Entity.DTOs.Comment;
 using Blog.Entity.Entities;
 using System;
@@ -11,6 +11,7 @@ namespace Blog.Service.Services.Abstractions
 {
     public interface IArticleService
     {
+        public Task<ArticleViewModel> GetLastArticle();
         public Task<List<ArticleViewModel>> GetAllArticlesWithCategoryAsync();
         public Task<List<ArticleViewModel>> GetAllDeletedArticles();
         Task CreateArticleAsync(ArticleCreateModel articleCreateModel, bool isAIActive = true);
@@ -22,6 +23,7 @@ namespace Blog.Service.Services.Abstractions
         Task<ArticleListViewModel> GetAllByPagingAsync(Guid? categoryId, int currentPage = 1, int pageSize = 3, bool isAscending = false);
         Task<ArticleListViewModel> SearchAsync(string keyword, int currentPage = 1, int pageSize = 3, bool isAscending = false);
         Task<ArticleViewModel> GetArticleWithCategoryAndImageAndUserAsync(Guid articleId);
+        Task<ArticleViewModel> GetArticleBySlugWithCategoryAndImageAndUserAsync(string slug);
         Task<ArticleListViewModel> GetArticlesByCategoryAsync(Guid categoryId, int currentPage = 1, int pageSize = 3, bool isAscending = false);
         Task<List<ArticleIndexViewModel>> GetAllArticlesWithCategoryForIndexAsync();
         Task UpdateArticleViewCount(Guid id);
@@ -35,7 +37,7 @@ namespace Blog.Service.Services.Abstractions
         Task<List<ArticleIndexViewModel>> GetLastFiveArticlesAsync();
         Task<List<CommentViewModel>> GetAllCommentsAsync();
         Task<string> ForceDeleteCommentAsync(Guid articleId, Guid commentId);
-        Task<string?> ApproveCommentAsync(Guid articleId, Guid commentId, string approved);
+        Task<string?> ApproveCommentAsync(Guid? articleId, Guid? commentId, bool approved);
 
 
 

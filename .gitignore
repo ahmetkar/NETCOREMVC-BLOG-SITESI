@@ -1,1 +1,12 @@
 .vs/
+layout.json
+nextfrontend/node_modules
+nextfrontend/.env.local
+nextfrontend/.next
+Blog.WebAPI/Properties/google.json
+Blog.WebAPI/appsettings.json
+Blog.WebAPI/bin
+Blog.WebAPI/obj
+Blog.Service/obj
+Blog.Service/bin
+

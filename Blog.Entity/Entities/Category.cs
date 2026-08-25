@@ -1,4 +1,4 @@
-﻿using Blog.Core.Entities;
+using Blog.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +20,7 @@ namespace Blog.Entity.Entities
             this.CreatedDate = createdDate;
         }
         public string Name { get; set; }
+        public string Slug { get; set; }
         public bool isMenuCategory { get; set; } = false; 
         public bool isPrimeCategory { get; set; } = false;
         public ICollection<Article> Articles { get; set; }

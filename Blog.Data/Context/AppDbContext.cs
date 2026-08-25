@@ -1,4 +1,4 @@
-﻿using Blog.Entity.Entities;
+using Blog.Entity.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
@@ -54,7 +54,6 @@ namespace Blog.Data.Context
         public DbSet<SiteSettings> SiteSettings { get; set; }
         public DbSet<Page> Pages { get; set; }
         public DbSet<Message> Messages { get; set; }
-
-
+        public DbSet<Subscriber> Subscribers { get; set; }
     }
 }
