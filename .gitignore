@@ -9,4 +9,13 @@ Blog.WebAPI/bin
 Blog.WebAPI/obj
 Blog.Service/obj
 Blog.Service/bin
+Blog.Core/bin
+Blog.Core/obj
+Blog.Data/obj
+Blog.Data/bin
+Blog.Service/obj
+Blog.Service/bin
+Blog.Entity/obj
+Blog.Entity/bin
+
 

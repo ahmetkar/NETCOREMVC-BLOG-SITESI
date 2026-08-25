@@ -11,6 +11,7 @@ services:
       - "1443:1433"
     volumes:
       - mssql_data:/var/opt/mssql
+
   memcached:
     image: memcached:1.6-alpine
     container_name: blog-memcached
@@ -24,6 +25,26 @@ services:
       - -c
       - "1024"
       - -v
+
+  backend-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - CLIENT_URL=http://localhost:3000 
+        - BACKEND_URL=http://localhost:5190
+    container_name: habersitesi-backend
+    restart: unless-stopped
+    ports:
+      - "5190:8080" 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=BlogDatabase;User Id=sa;Password=sa@123456;TrustServerCertificate=True;
+      - Memcached__Host=blog-memcached
+      - Memcached__Port=11211
+    depends_on:
+      - mssql
+      - memcached
 
 volumes:
   mssql_data:

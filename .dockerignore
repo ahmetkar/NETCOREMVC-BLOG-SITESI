@@ -1,0 +1,15 @@
+.git/
+.vs/
+.vscode/
+
+nextfrontend/
+
+**/bin/
+**/obj/
+**/out/
+
+api_log.txt
+ekrangoruntuleri/
+
+Dockerfile
+.dockerignore

@@ -27,7 +27,10 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddEnyimMemcached(options =>
 {
-    options.AddServer("localhost", 11211);
+    var memcachedHost = builder.Configuration["Memcached:Host"] ?? "localhost";
+    var memcachedPortString = builder.Configuration["Memcached:Port"];
+    var memcachedPort = int.TryParse(memcachedPortString, out var p) ? p : 11211;
+    options.AddServer(memcachedHost, memcachedPort);
 });
 
 // Configure Rate Limiter
@@ -63,7 +66,12 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        var corsOrigins = builder.Configuration["Cors:AllowedOrigins"];
+        var origins = !string.IsNullOrEmpty(corsOrigins)
+            ? corsOrigins.Split(',', StringSplitOptions.RemoveEmptyEntries)
+            : new[] { "http://localhost:3000" };
+
+        policy.WithOrigins(origins)
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
