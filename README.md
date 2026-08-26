@@ -14,11 +14,17 @@ Canlı link : https://blog.ahmetkar.com
 - AutoMapper
 - Identity Service
 - Entity Framework CORE
-- MSSQL
+- MSSQL - Microsoft Azure SQL
 - Fluent Validation
 - Next.js
 - HTML-CSS
 - Tailwind
+- Memcached
+- Caddy (Httpsden backend api containerına Reverse proxy olarak)
+- Docker Swarm
+- Google Cloud Storage
+- Google Cloud Compute Engine
+- Vercel
 
 ## Kullanılan Mimari ve Design Pattern'lar
 
