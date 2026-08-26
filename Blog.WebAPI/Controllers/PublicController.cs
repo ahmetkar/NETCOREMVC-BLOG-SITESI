@@ -43,7 +43,7 @@ namespace Blog.WebAPI.Controllers
         [EnableRateLimiting("PublicLimitPolicy")]
         public async Task<IActionResult> SubscribeNewsletter([FromBody] CreateSubscribeModel request)
         {
-            var ipAddress = HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString();
+            var ipAddress = HashHelper.Hash(HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString());
             var result = await _subscriberService.SubscribeAsync(request.Email, ipAddress);
             if (result)
             {
@@ -161,7 +161,7 @@ namespace Blog.WebAPI.Controllers
             var prevandnextArticles = await _articleService.GetPrevAndNextArticlesAsync(article.CreatedDate);
             var maylikeArticles = await _articleService.GetMayLikeArticlesAsync(article.Id);
 
-            string ip = HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "";
+            string ip = HashHelper.Hash(HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString()) ?? "";
 
             return Ok(new {
                 Article = article,

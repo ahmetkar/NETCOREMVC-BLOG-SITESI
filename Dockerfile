@@ -31,16 +31,6 @@ EXPOSE 8080
 EXPOSE 8081
 
 
-ARG CLIENT_URL=http://localhost:3000
-ARG BACKEND_URL=http://localhost:5190
-
-
-ENV SiteBlogLink=${CLIENT_URL}/blog
-ENV JWT__ValidAudience=${CLIENT_URL}
-ENV Cors__AllowedOrigins=${CLIENT_URL}
-ENV JWT__ValidIssuer=${BACKEND_URL}
-
-
 ENV ASPNETCORE_ENVIRONMENT=Production
 
 # Publish aşamasında üretilen dosyaları çalışma dizinine kopyalıyoruz

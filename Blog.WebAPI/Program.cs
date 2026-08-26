@@ -11,6 +11,8 @@ using System.Text;
 using System.Security.Claims;
 using System.Threading.RateLimiting;
 
+using Microsoft.AspNetCore.HttpOverrides;
+
 var builder = WebApplication.CreateBuilder(args);
 
 System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
@@ -22,8 +24,12 @@ builder.Services.AddControllers().AddJsonOptions(opt =>
 {
     opt.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
-builder.Services.AddOpenApi();
 
+
+if (!builder.Environment.IsProduction())
+{
+builder.Services.AddOpenApi();
+}
 
 builder.Services.AddEnyimMemcached(options =>
 {
@@ -60,6 +66,13 @@ builder.Services.AddRateLimiter(options =>
             message = "Çok fazla istek gönderdiniz. Lütfen bir süre sonra tekrar deneyin."
         }, cancellationToken: token);
     };
+});
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto;
 });
 
 builder.Services.AddCors(options =>
@@ -132,16 +145,19 @@ app.Use(async (context, next) =>
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
         "img-src 'self' data: https: http:; " +
         "font-src 'self' https://fonts.gstatic.com; " +
-        "connect-src 'self' http://localhost:* https://*;");
+        $"connect-src 'self' {builder.Configuration["JWT:ValidAudience"]}:* https://*;");
     await next();
 });
 
-if (app.Environment.IsDevelopment())
+app.UseForwardedHeaders();
+
+if (!app.Environment.IsProduction())
 {
     app.MapOpenApi();
+    app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 app.UseCors();
 app.UseRateLimiter();

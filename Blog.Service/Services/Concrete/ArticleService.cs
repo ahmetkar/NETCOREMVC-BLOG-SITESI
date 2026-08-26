@@ -642,7 +642,7 @@ namespace Blog.Service.Services.Concrete
 
         public async Task UpdateArticleViewCount(Guid id)
         {
-            var ipAdress = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            var ipAdress = HashHelper.Hash(httpContextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString());
 
             var getArticle = await _unitOfWorkk.GetRepository<Article>().GetAsync(x => x.Id == id);
             var visitor = await _unitOfWorkk.GetRepository<Visitor>().GetAsync(x => x.IpAdress == ipAdress);
@@ -654,7 +654,7 @@ namespace Blog.Service.Services.Concrete
                 await _unitOfWorkk.SaveAsync();
             }
 
-            var articleVisitor = await _unitOfWorkk.GetRepository<ArticleVisitor>().CountAsync(x => x.Visitor.Id == visitor.Id
+            var articleVisitor = await _unitOfWorkk.GetRepository<ArticleVisitor>().CountAsync(x => x.Visitor.IpAdress == visitor.IpAdress
                 && x.Article.Id == id
             , x => x.Visitor, y => y.Article);
 
@@ -678,7 +678,7 @@ namespace Blog.Service.Services.Concrete
 
             (bool, bool, bool) results = (false, true, true);
 
-            var ipAdress = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            var ipAdress = HashHelper.Hash(httpContextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString());
 
             var getArticle = await _unitOfWorkk.GetRepository<Article>().GetAsync(x => x.Id == articleId);
             var visitor = await _unitOfWorkk.GetRepository<Visitor>().GetAsync(x => x.IpAdress == ipAdress);
