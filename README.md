@@ -4,7 +4,6 @@
 Bu proje .Net core mvc ,next.js,tailwind,html,css,EF Core,MSSQL kullanılarak yazılmıştır.
 Çok katmanlı mimari ve çeşitli design patternlar kullanarak ölçeklenebilir,yönetilebilir kodlar yazılmıştır.
 
-Canlı linkten sitemizi ziyaret edebilir,isterseniz admin panelini test etmek için şifre talep edebilirsiniz.
 
 Canlı link : https://blog.ahmetkar.com
 
