@@ -20,7 +20,7 @@ Canlı link : https://blog.ahmetkar.com
 - HTML-CSS
 - Tailwind
 - Memcached
-- Caddy (Httpsden backend api containerına Reverse proxy olarak)
+- Caddy (Httpsden backend api containerına Reverse proxy için,https/tls yapılandırmaları için)
 - Docker Swarm
 - Google Cloud Storage
 - Google Cloud Compute Engine
