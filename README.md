@@ -45,8 +45,8 @@ Canlı link : https://blog.ahmetkar.com
 - Yorum yapılması
 - Arama özelliği
 - Admin panelinden silinen makale,medya,kategori gibi verilerin silinmeyip çöp kutusuna gönderilmesi ve istenirse tamamen silinmesi
-- Tailwind ve nextjs kullanan responsive ve modern tasarım
-- E-mail abonelik sistemi
+- Tailwind ve nextjs kullanan responsive ve modern,mobil uyumlu tasarım
+- E-mail abonelik sistemi,Abonelerin yönetimi
 - Memcache ile caching
 - Google storage ile resimlerin depolanması
 - Google Compute Engine ile .net backendin,azure sql ile sql veritabanının ve vercel ile next.js frontendin deploy edilmesi
