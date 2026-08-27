@@ -2,7 +2,7 @@
 # .NET CORE MVC BLOG SİTESİ
 
 Bu proje .Net core mvc ,next.js,tailwind,html,css,EF Core,MSSQL kullanılarak yazılmıştır.
-Çok katmanlı mimari ve çeşitli design patternlar kullanarak ölçeklenebilir,yönetilebilir kodlar yazılmıştır.
+Çok katmanlı mimari ve generic repository,unit of work design patternları clean code prensipleri kullanarak ölçeklenebilir,yönetilebilir kodlar yazılmıştır.
 
 
 Canlı link : https://blog.ahmetkar.com
@@ -49,6 +49,8 @@ Canlı link : https://blog.ahmetkar.com
 - E-mail abonelik sistemi
 - Memcache ile caching
 - Google storage ile resimlerin depolanması
+- Google Compute Engine ile .net backendin,azure sql ile sql veritabanının ve vercel ile next.js frontendin deploy edilmesi
+- İleri Seviye SEO Desteği
 
 
 
