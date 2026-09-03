@@ -33,6 +33,8 @@ Canlı link : https://blog.ahmetkar.com
 - Dependency Injection
 - Generic Repository Design Pattern
 - Clean Architecture
+- Memcached ile Cache Aside/Lazy Loading Design Pattern
+- Memcached ile Cache Invalidation Pattern
 
 ## Özellikler
 
@@ -52,6 +54,12 @@ Canlı link : https://blog.ahmetkar.com
 - Google Compute Engine ile .net backendin,azure sql ile sql veritabanının ve vercel ile next.js frontendin deploy edilmesi
 - İleri Seviye SEO Desteği
 
+# Memcached Altyapısı Açıklanması
+
+- Memcached ile blogların veritabanından çekilirken eğer memcached de varsa oradan alınıp gönderilmesi yoksa veritabanından çekilip memcached e kaydedilip öyle gönderilmesi sağlanmıştır. Bu Lazy Loading pattern olarak bilinmektedir.
+- Memcached ile bağlantılı cachelerin aynı etikete sahip cache listesinde tutulması sağlanmış. Eğer örneğin article silinirse,güncellenirse,yenisi eklenirse bu cache listesindeki tüm cache başlıklarına karşılık gelen verilerin temizlenmesi sağlanmıştır.
+- Eğer cache listesindeki sadece berirli cache başlıkları etkileniyorsa onların özellikle verilerek o cache listesinden silinebilmesi sağlanmıştır.
+- Normalde rediste cache tag lar aracılığıyla bu özellik gömülü olarak desteklenir ama ben bunu memcached de cache listesi ni json olarak ayrı bir cache başlığı ile tutarak yaptım.
 
 
 ## Siteden Ekran Görüntüleri
